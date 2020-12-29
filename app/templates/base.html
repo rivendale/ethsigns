@@ -1,0 +1,14 @@
+<html>
+<head>
+    {% if title %}
+    <title>{{ title }} - ETH Signs</title>
+    {% else %}
+    <title>ETH Signs</title>
+    {% endif %}
+</head>
+    <body>
+        <div>ETH Signs: <a href="/index">Home</a></div>
+        <hr>
+        {% block content %}{% endblock %}
+    </body>
+</html>
