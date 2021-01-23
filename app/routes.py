@@ -60,4 +60,11 @@ def index(sym):
 def manage():
     form = ManageSigns()
 
-    return render_template('index.html', form=form,title='Data Management')
+    if form.validate_on_submit():
+        addsign = Sign(year=form.startyear.data, month=form.startmonth.data,day=form.startday.data, bsign=form.beforesign.data , btype=form.beforetype.data,dsign=form.duringsign.data,dtype=form.duringtype.data)
+        db.session.add(addsign)
+        db.session.commit()
+        flash('Year added')
+        return redirect(url_for('manage'))
+    signs = Sign.query.order_by(Sign.year.asc()).all()
+    return render_template('manage.html', signs=signs,form=form,title='Data Management')

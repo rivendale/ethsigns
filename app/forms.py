@@ -13,10 +13,10 @@ class ManageSigns(FlaskForm):
     startyear = IntegerField('Year', validators=[DataRequired()])
     startmonth = IntegerField('Month', validators=[DataRequired()])
     startday = IntegerField('Day', validators=[DataRequired()])
-    beforesign = StringField('Before Sign', validators=[DataRequired()])
     beforetype = StringField('Before Type', validators=[DataRequired()])
-    duringsign = StringField('During Sign', validators=[DataRequired()])
+    beforesign = StringField('Before Sign', validators=[DataRequired()])
     duringtype = StringField('During Type', validators=[DataRequired()])
+    duringsign = StringField('During Sign', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
 class LoginForm(FlaskForm):

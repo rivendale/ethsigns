@@ -14,5 +14,34 @@
     {% endif %}
 </br>
 
+{% if signs %}
+</br>
+<h4>DATA LIST</h4>
+<table class="table table-striped">
+   <thead>
+      <tr>
+         <th>YEAR</th>
+         <th>MONTH / DAY</th>
+         <th>SIGN</th>
+         <th>TYPE</th>
+         <th>PREV SIGN</th>
+         <th>PREV TYPE</th>
+      </tr>
+   </thead>
+   <tbody>
+    {% for sign in signs %}
+        <tr>
+        <td>  {{sign.year}} </td>
+        <td>  {{sign.month}} / {{sign.day}}</td>
+        <td>  {{sign.dsign }} </td>
+        <td>  {{sign.dtype}} </td>
+        <td>  {{sign.bsign }} </td>
+        <td>  {{sign.btype}} </td>
+        </tr>
+   {% endfor %}
+  </tbody>
+ </table>
+
+{% endif %}
 
 {% endblock %}
