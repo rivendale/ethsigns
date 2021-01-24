@@ -22,10 +22,12 @@
       <tr>
          <th>YEAR</th>
          <th>MONTH / DAY</th>
-         <th>SIGN</th>
          <th>TYPE</th>
-         <th>PREV SIGN</th>
+         <th>SIGN</th>
          <th>PREV TYPE</th>
+         <th>PREV SIGN</th>
+
+         <th>REMOVE</th>
       </tr>
    </thead>
    <tbody>
@@ -33,10 +35,11 @@
         <tr>
         <td>  {{sign.year}} </td>
         <td>  {{sign.month}} / {{sign.day}}</td>
-        <td>  {{sign.dsign }} </td>
         <td>  {{sign.dtype}} </td>
-        <td>  {{sign.bsign }} </td>
+        <td>  {{sign.dsign }} </td>
         <td>  {{sign.btype}} </td>
+        <td>  {{sign.bsign }} </td>
+        <td>  <a class="btn btn-sm btn-default" role="button" href="{{ url_for('rmsym', year = sign.year) }}"><img src="https://image.flaticon.com/icons/png/128/121/121113.png" width="12" height="10" alt="Delete"></a></td>
         </tr>
    {% endfor %}
   </tbody>
