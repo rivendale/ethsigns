@@ -17,8 +17,8 @@
     <b>Type: </b> {{ typ }}
   </br>
     <b>Astrological Symbol: </b> {{ sym }}
-
-
+</br>
+    <img src="{{url_for('static', filename=sym+'.png')}}" width="100" height="100" ></a>
     {% endif %}
 
 {% endblock %}

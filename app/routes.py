@@ -39,8 +39,8 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
-@app.route('/',methods=['GET', 'POST'], defaults={"sym":"UNK"})
-@app.route('/index',methods=['GET', 'POST'], defaults={"sym":"UNK","typ":"UNK"})
+@app.route('/',methods=['GET', 'POST'], defaults={"sym":" ","typ":" "})
+@app.route('/index',methods=['GET', 'POST'], defaults={"sym":" ","typ":" "})
 @app.route('/index/<typ>/<sym>/', methods=['GET', 'POST'])
 def index(typ,sym):
     form = SignsForm()
@@ -48,15 +48,15 @@ def index(typ,sym):
         chkmonth = form.birthmonth.data
         chkday = form.birthday.data
         chkyear = form.birthyear.data
-        typ = "NOT FOUND"
-        sym = "NOT FOUND"
+        typ = " "
+        sym = " "
         checksign = Sign.query.filter_by(year=form.birthyear.data).first()
         if checksign is not None:
-            if (checksign.month > chkmonth):
-                typ = checksign.dtype
-                sym = checksign.dsign
+            if (chkmonth > checksign.month):
+                    typ = checksign.dtype
+                    sym = checksign.dsign
             else:
-                if (checksign.day > chkday):
+                if (chkday >= checksign.day):
                     typ = checksign.dtype
                     sym = checksign.dsign
                 else:
