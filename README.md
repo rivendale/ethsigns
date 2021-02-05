@@ -13,21 +13,21 @@ https://www.thechinesezodiac.org/
 
 https://en.wikipedia.org/wiki/Chinese_zodiac
 
-# SETUP NOTES
+# SETUP NOTES &nbsp;
 
-### VIRTUAL ENVIRONMENT
-sudo apt install python3-venv
-python3 -m venv venv
-**To Activate:** source venv/bin/activate
+### VIRTUAL ENVIRONMENT &nbsp;
+sudo apt install python3-venv &nbsp;
+python3 -m venv venv &nbsp;
+**To Activate:** source venv/bin/activate &nbsp;
 
-### VIRTUAL SERVER SETUP NOTES
-sudo apt-get update
-sudo apt-get upgrade
-sudo apt install python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools
+### VIRTUAL SERVER SETUP NOTES &nbsp;
+sudo apt-get update &nbsp;
+sudo apt-get upgrade &nbsp;
+sudo apt install python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools &nbsp;
 
-**FIREWALL**:
-sudo ufw allow OpenSSH
-sudo ufw allow 5000
-sudo ufw allow 5432
-ufw enable
-ufw status
+**FIREWALL**: &nbsp;
+sudo ufw allow OpenSSH &nbsp;
+sudo ufw allow 5000 &nbsp;
+sudo ufw allow 5432 &nbsp;
+ufw enable &nbsp;
+ufw status &nbsp;
