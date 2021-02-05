@@ -1,6 +1,7 @@
-# ethsigns
+# Ethereum Signs - ETHSigns.com 
 Ethereum - Chinese Zodiac - favorite projects - Medium journal log: https://resourcehub.medium.com/ethereum-turn-based-strategy-game-and-nfts-working-draft-80f0f247b64e
-
+</br>
+</br>
 Chinese Zodiacs that can be minted (NFT) based on a user's birth date (example: https://ethsigns.com/index/earth/pig/). 
 As this isn't my primary area and with my limited time I haven't gotten that far other than to create a simple Flask app that my original intention was to create
 a REST API for that could pull from a JavaScript front-end to interface with xDai. 
