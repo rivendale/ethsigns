@@ -8,26 +8,27 @@ This would just be for fun to compare personality traits (Earth Pig : https://ww
 This could then could morph into something more later, such as a way to import for games that would tilt towards which Zodiacs get along
 (compatibility- https://en.wikipedia.org/wiki/Chinese_zodiac)  for team formation (and/or different starting skills based on personality traits). 
 
+</br>
 Reference Links:
 https://www.thechinesezodiac.org/
 
-https://en.wikipedia.org/wiki/Chinese_zodiac
+https://en.wikipedia.org/wiki/Chinese_zodiac </br>
 
-# SETUP NOTES &nbsp;
+# SETUP NOTES </br>
 
-### VIRTUAL ENVIRONMENT &nbsp;
-sudo apt install python3-venv &nbsp;
-python3 -m venv venv &nbsp;
-**To Activate:** source venv/bin/activate &nbsp;
+### VIRTUAL ENVIRONMENT </br>
+sudo apt install python3-venv </br>
+python3 -m venv venv </br>
+**To Activate:** source venv/bin/activate </br>
 
 ### VIRTUAL SERVER SETUP NOTES &nbsp;
-sudo apt-get update &nbsp;
-sudo apt-get upgrade &nbsp;
-sudo apt install python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools &nbsp;
+sudo apt-get update </br>
+sudo apt-get upgrade </br>
+sudo apt install python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools </br>
 
-**FIREWALL**: &nbsp;
-sudo ufw allow OpenSSH &nbsp;
-sudo ufw allow 5000 &nbsp;
-sudo ufw allow 5432 &nbsp;
-ufw enable &nbsp;
-ufw status &nbsp;
+**FIREWALL**: </br>
+sudo ufw allow OpenSSH </br>
+sudo ufw allow 5000 </br>
+sudo ufw allow 5432 </br>
+ufw enable </br>
+ufw status </br>
