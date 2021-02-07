@@ -11,7 +11,7 @@ jobs:
   run-tests:
     name: Run Tests
 
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -24,7 +24,7 @@ jobs:
       id: cache-venv
       with:
         # This path is specific to Ubuntu
-        path: ~/.cache/pip
+        path: ~/pip-env
         # Look to see if there is a cache hit for the corresponding requirements file
         key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
         restore-keys: |
@@ -32,16 +32,16 @@ jobs:
           ${{ runner.os }}-
     - name: Install dependencies
       run: |
-        python -m venv ~/.cache/pip/
-        ~/.cache/pip/bin/activate
+        python -m venv ~/pip-env/
+        source ~/pip-env/bin/activate
         python -m pip install --upgrade pip setuptools wheel
         pip install -r requirements.txt
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        ~/.cache/pip/bin/activate
-        # flake8 .
+        source ~/pip-env/bin/activate
+        flake8 .
     - name: Test with pytest
       run: |
-        ~/.cache/pip/bin/activate
-        # coverage run -m pytest
+        source ~/pip-env/bin/activate
+        coverage run -m pytest

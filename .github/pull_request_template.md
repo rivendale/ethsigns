@@ -5,7 +5,7 @@ Summaries the main tasks handled in the pull request
 **Description of Task to be completed?**
 
 Describe (in detail) what the task completed in the pull request does as per stated in the
-pivotal tracker story
+GitHub issue
 
 **How should this be manually tested?**
 

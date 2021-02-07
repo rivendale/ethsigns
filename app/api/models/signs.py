@@ -9,10 +9,10 @@ class Zodiacs(db.Model, ModelOperations):
     force = db.Column(db.String(60), index=True, nullable=False)
     image_url = db.Column(db.String(250))
     base_index = db.Column(db.Integer, index=True, unique=True)
-    positive_traits = db.Column(db.String(500), index=True)
-    negative_traits = db.Column(db.String(500), index=True)
-    best_compatibility = db.Column(db.String(500), index=True)
-    worst_compatibility = db.Column(db.String(500), index=True)
+    positive_traits = db.Column(db.String(300), index=True)
+    negative_traits = db.Column(db.String(300), index=True)
+    best_compatibility = db.Column(db.String(300), index=True)
+    worst_compatibility = db.Column(db.String(00), index=True)
     report = db.Column(db.String(4000), index=True)
 
     def __init__(self, sign):

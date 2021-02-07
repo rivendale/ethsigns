@@ -18,10 +18,8 @@ authorizations = {'Bearer Auth': {
 }}
 
 
-
 signs_path = "signs/"
 api.add_namespace(signs_ns, path=signs_path)
-
 
 
 """Return app object given config object."""
@@ -31,17 +29,18 @@ app.config.from_object(AppConfig)
 Bootstrap(app)
 db = SQLAlchemy(app)
 api.init_app(app)
-Migrate(app, db)
+migrate = Migrate()
+migrate.init_app(app, db, render_as_batch=True)
 login = LoginManager(app)
 login.login_view = 'login'
+
 
 @app.route('/api/v1/doc/', endpoint='doc')
 def swagger_ui():
     return apidoc.ui_for(api)
 
+
 app.register_blueprint(api_blueprint)
 
-
-
-from app import routes
 from app.api import views
+from app import routes

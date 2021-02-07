@@ -1,8 +1,7 @@
 """Application configuration module."""
 
+import sys
 from os import getenv, path
-
-from pathlib import Path
 
 from dotenv import load_dotenv
 
@@ -19,6 +18,7 @@ class Config(object):
     WTF_CSRF_ENABLED = True
     DEBUG = False
     LOG_TO_STDOUT = getenv('LOG_TO_STDOUT', True)
+    API_BASE_URL_V1 = getenv('API_BASE_URL_V1', "")
     ADMINS = getenv('ADMINS', [])
 
 
@@ -35,9 +35,21 @@ class DevelopmentConfig(Config):
     DEBUG = True
 
 
+class TestingConfig(Config):
+    """App testing configuration."""
+
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = getenv(
+        'TEST_DATABASE_URL',
+        default='sqlite:///' + path.join(basedir, 'ethsigns-test.db'))
+    FLASK_ENV = 'testing'
+    API_BASE_URL_V1 = "/api/v1"
+
+
 config = {
     'production': ProductionConfig,
     'development': DevelopmentConfig,
 }
 
-AppConfig = config.get(getenv('FLASK_ENV',  'development'))
+AppConfig = TestingConfig if 'pytest' in sys.modules else config.get(
+    getenv('FLASK_ENV', 'development'))

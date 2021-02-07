@@ -7,21 +7,6 @@ STRING_REGEX = re.compile(r"^[a-zA-Z0-9]+(([' .-][a-zA-Z0-9])?[a-zA-Z0-9]*)*$")
 URL_REGEX = re.compile(r"^(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)")
 
 
-def header_parser(token="token"):
-    """
-    Function to add Authorization to the request header parser
-    Args:
-        token (str): user token
-    Return:
-        parser (obj): request parser
-    """
-    parser = reqparse.RequestParser()
-    parser.add_argument('Authorization',
-                        required=True,
-                        help=f"Bearer {{{token}}}", location='headers')
-    return parser
-
-
 def validate_list_values(values):
     """
     Function to add validate list objects
@@ -169,7 +154,7 @@ def sign_validation(create=True):
                         case_sensitive=False, location='json')
     parser.add_argument('image_url',
                         type=validate_url,
-                        required=create, help='Image url: ',
+                        required=create, help='Image url:',
                         case_sensitive=False)
 
     return parser
