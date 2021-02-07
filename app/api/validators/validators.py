@@ -1,4 +1,4 @@
-from app.api.helpers.constants import ZODIAC_ANIMALS
+from app.api.helpers.constants import ZODIAC_ANIMALS, ZODIAC_FORCES, ZODIAC_ELEMENTS
 import re
 from flask_restplus import reqparse
 
@@ -39,6 +39,44 @@ def validate_list_values(values):
             raise ValueError("Only strings allowed")
 
     return values
+
+
+def validate_element(value):
+    """
+    Function to validate the element
+    Args:
+        value (str): element to be validated
+    Raises:
+        (ValueError): Raise ValueError if the element invalid
+    Return:
+        value (str): valid element
+    """
+    if not re.match(STRING_REGEX, value):
+        raise ValueError("Provide a valid element")
+
+    if value.title() not in ZODIAC_ELEMENTS:
+        raise ValueError(f"Options are {ZODIAC_ELEMENTS}")
+
+    return value
+
+
+def validate_force(value):
+    """
+    Function to validate the force
+    Args:
+        value (str): force to be validated
+    Raises:
+        (ValueError): Raise ValueError if the force invalid
+    Return:
+        value (str): valid force
+    """
+    if not re.match(STRING_REGEX, value):
+        raise ValueError("Provide a valid force")
+
+    if value.title() not in ZODIAC_FORCES:
+        raise ValueError(f"Options are {ZODIAC_FORCES}")
+
+    return value
 
 
 def validate_name(value):
@@ -91,6 +129,14 @@ def sign_validation(create=True):
                         type=validate_name,
                         required=create,
                         help='Name:', location='json',)
+    parser.add_argument('force',
+                        type=validate_force,
+                        required=create,
+                        help='Force:', location='json',)
+    parser.add_argument('element',
+                        type=validate_element,
+                        required=create,
+                        help='Element:', location='json',)
     parser.add_argument('positive_traits',
                         type=validate_list_values,
                         required=create,

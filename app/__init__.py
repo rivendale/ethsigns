@@ -1,10 +1,14 @@
 from config import AppConfig
 from flask import Flask
 from flask_bootstrap import Bootstrap
-from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_login import LoginManager
+from flask_migrate import Migrate
+from flask_restplus import apidoc
+from flask_sqlalchemy import SQLAlchemy
+from app.api import signs_ns
+
+from app.api import api_blueprint
 from app.api.resources import api
 
 authorizations = {'Bearer Auth': {
@@ -13,6 +17,10 @@ authorizations = {'Bearer Auth': {
     'name': 'Authorization'
 }}
 
+
+
+signs_path = "signs/"
+api.add_namespace(signs_ns, path=signs_path)
 
 
 
@@ -27,7 +35,13 @@ Migrate(app, db)
 login = LoginManager(app)
 login.login_view = 'login'
 
+@app.route('/api/v1/doc/', endpoint='doc')
+def swagger_ui():
+    return apidoc.ui_for(api)
 
-from app.api import views
+app.register_blueprint(api_blueprint)
+
+
+
 from app import routes
-
+from app.api import views

@@ -23,8 +23,10 @@ class FormatNested(fields.Raw):
 
 
 signs_schema = {
-    'id': fields.Integer(description='The Sign unique identifier'),
-    'name': fields.String(description='Sign unique name'),
+    'id': fields.Integer(description='The Sign identifier'),
+    'name': fields.String(description='Sign name'),
+    'element': fields.String(description='Sign element'),
+    'force': fields.String(description='Sign force'),
     'image_url': fields.String(description='Sign Image Url'),
     'positive_traits': FormatNested(attribute='positive_traits', description="Sign's positive traits"),
     'negative_traits': FormatNested(attribute='negative_traits', description="Sign's negative traits"),
