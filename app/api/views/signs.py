@@ -27,7 +27,6 @@ class ZodiacResource(Resource):
         Returns:
             (tuple): Returns status, success message and relevant zodiac details
         """
-
         sign_data = sign_validation().parse_args(strict=True)
         sign_data['positive_traits'] = str(sign_data['positive_traits'])
         sign_data['negative_traits'] = str(sign_data['negative_traits'])
