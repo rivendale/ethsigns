@@ -1,15 +1,43 @@
-import os
+"""Application configuration module."""
+
+from os import getenv, path
+
+from pathlib import Path
+
 from dotenv import load_dotenv
 
-basedir = os.path.abspath(os.path.dirname(__file__))
-load_dotenv(os.path.join(basedir, '.env'))
+basedir = path.abspath(path.dirname(__file__))
+load_dotenv(path.join(basedir, '.env'))
+
 
 class Config(object):
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'AddRandomKeyHere'
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'sqlite:///' + os.path.join(basedir, 'ethsigns.db')
+    """App base configuration."""
+    SECRET_KEY = getenv('SECRET_KEY', '')
+    SQLALCHEMY_DATABASE_URI = getenv('DATABASE_URL',
+                                     'sqlite:///' + path.join(basedir, 'ethsigns.db'))
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     WTF_CSRF_ENABLED = True
-    LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
-    ADMINS = ['addemailhere@gmail.com']
-    
+    DEBUG = False
+    LOG_TO_STDOUT = getenv('LOG_TO_STDOUT', True)
+    ADMINS = getenv('ADMINS', [])
+
+
+class ProductionConfig(Config):
+    """App production configuration."""
+
+
+class DevelopmentConfig(Config):
+    """App development configuration."""
+
+    SQLALCHEMY_DATABASE_URI = getenv(
+        'DATABASE_URL', 'sqlite:///' + path.join(basedir, 'ethsigns.db'))
+    AUTH_URL = getenv('AUTH_URL_STAGING')
+    DEBUG = True
+
+
+config = {
+    'production': ProductionConfig,
+    'development': DevelopmentConfig,
+}
+
+AppConfig = config.get(getenv('FLASK_ENV',  'development'))

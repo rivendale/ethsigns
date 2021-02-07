@@ -6,6 +6,7 @@ from app.forms import *
 from app.models import *
 from datetime import datetime
 
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -19,6 +20,7 @@ def register():
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -34,15 +36,17 @@ def login():
         return redirect(url_for('index'))
     return render_template('login.html', title='Sign In', form=form)
 
+
 @app.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('index'))
 
-@app.route('/',methods=['GET', 'POST'], defaults={"sym":" ","typ":" "})
-@app.route('/index',methods=['GET', 'POST'], defaults={"sym":" ","typ":" "})
+
+@app.route('/', methods=['GET', 'POST'], defaults={"sym": " ", "typ": " "})
+@app.route('/index', methods=['GET', 'POST'], defaults={"sym": " ", "typ": " "})
 @app.route('/index/<typ>/<sym>/', methods=['GET', 'POST'])
-def index(typ,sym):
+def index(typ, sym):
     form = SignsForm()
     if form.validate_on_submit():
         chkmonth = form.birthmonth.data
@@ -53,8 +57,8 @@ def index(typ,sym):
         checksign = Sign.query.filter_by(year=form.birthyear.data).first()
         if checksign is not None:
             if (chkmonth > checksign.month):
-                    typ = checksign.dtype
-                    sym = checksign.dsign
+                typ = checksign.dtype
+                sym = checksign.dsign
             else:
                 if (chkday >= checksign.day):
                     typ = checksign.dtype
@@ -62,9 +66,10 @@ def index(typ,sym):
                 else:
                     typ = checksign.btype
                     sym = checksign.bsign
-        return redirect(url_for('index', typ=typ,sym=sym))
+        return redirect(url_for('index', typ=typ, sym=sym))
 
-    return render_template('index.html', sym=sym, typ=typ,form=form,title='Home')
+    return render_template('index.html', sym=sym, typ=typ, form=form, title='Home')
+
 
 @app.route('/manage', methods=['GET', 'POST'])
 @login_required
@@ -73,20 +78,21 @@ def manage():
 
     if form.validate_on_submit():
         checkfirst = Sign.query.filter_by(year=form.startyear.data).first()
-        addsign = Sign(year=form.startyear.data, month=form.startmonth.data,day=form.startday.data, bsign=form.beforesign.data , btype=form.beforetype.data,dsign=form.duringsign.data,dtype=form.duringtype.data)
+        addsign = Sign(year=form.startyear.data, month=form.startmonth.data, day=form.startday.data,
+                       bsign=form.beforesign.data, btype=form.beforetype.data, dsign=form.duringsign.data, dtype=form.duringtype.data)
         if checkfirst is None:
             db.session.add(addsign)
             db.session.commit()
             flash('Year added')
         else:
-            Sign.query.filter_by(year = form.startyear.data).delete()
+            Sign.query.filter_by(year=form.startyear.data).delete()
             db.session.commit()
             db.session.add(addsign)
             db.session.commit()
             flash('Updated entry')
         return redirect(url_for('manage'))
     signs = Sign.query.order_by(Sign.year.asc()).all()
-    return render_template('manage.html', signs=signs,form=form,title='Data Management')
+    return render_template('manage.html', signs=signs, form=form, title='Data Management')
 
 
 @app.route('/rmsym/<year>')
@@ -97,7 +103,7 @@ def rmsym(year):
         flash('Not found or other error')
         return redirect(url_for('manage'))
     else:
-        Sign.query.filter_by(year = year).delete()
+        Sign.query.filter_by(year=year).delete()
         db.session.commit()
         flash('Deleted ')
         db.session.commit()

@@ -1,16 +1,33 @@
+from config import AppConfig
 from flask import Flask
-from config import Config
 from flask_bootstrap import Bootstrap
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 from flask_login import LoginManager
+from app.api.resources import api
 
+authorizations = {'Bearer Auth': {
+    'type': 'apiKey',
+    'in': 'header',
+    'name': 'Authorization'
+}}
+
+
+
+
+"""Return app object given config object."""
 app = Flask(__name__)
-app.config.from_object(Config)
-bootstrap = Bootstrap(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
+app.config.from_object(AppConfig)
+Bootstrap(app)
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+api.init_app(app)
+Migrate(app, db)
 login = LoginManager(app)
 login.login_view = 'login'
 
+
+from app.api import views
 from app import routes
+
