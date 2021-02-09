@@ -13,3 +13,25 @@ VALID_SIGN = {
         "Truly, you would make a fine revolutionary."
     ]
 }
+
+
+
+
+
+
+
+VALID_SIGN_REQUEST = {
+    "birthyear": 1995,
+    "birthmonth": 2,
+    "birthday": 31,
+}
+
+VALID_SIGN_OBJ = {
+    "startyear": 1997,
+    "startmonth": 2,
+    "startday": 3,
+    "beforesign": "pig",
+    "beforetype": "fire",
+    "duringtype": "dog",
+    "duringsign": "fire"
+}

@@ -1,1 +1,1 @@
-from .signs import ZodiacResource
+from .signs import CreateListZodiacResource, GetPatchDeleteZodiacResource
