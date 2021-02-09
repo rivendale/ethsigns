@@ -28,10 +28,14 @@ signs_schema = {
     'element': fields.String(description='Sign element'),
     'force': fields.String(description='Sign force'),
     'image_url': fields.String(description='Sign Image Url'),
-    'positive_traits': FormatNested(attribute='positive_traits', description="Sign's positive traits"),
-    'negative_traits': FormatNested(attribute='negative_traits', description="Sign's negative traits"),
-    'best_compatibility': FormatNested(attribute='best_compatibility', description="Sign's best compatibility"),
-    'worst_compatibility': FormatNested(attribute='worst_compatibility', description="Sign's worst compatibility"),
+    'positive_traits': FormatNested(attribute='positive_traits',
+                                    description="Sign's positive traits"),
+    'negative_traits': FormatNested(attribute='negative_traits',
+                                    description="Sign's negative traits"),
+    'best_compatibility': FormatNested(attribute='best_compatibility',
+                                       description="Sign's best compatibility"),
+    'worst_compatibility': FormatNested(attribute='worst_compatibility',
+                                        description="Sign's worst compatibility"),
     'report': FormatNested(attribute='report', description="Sign's report"),
 }
 

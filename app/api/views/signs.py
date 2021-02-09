@@ -1,4 +1,5 @@
 """Module for Zodiac resource"""
+from app.api.helpers.signs import check_existing_signs
 from app import api
 from flask_restplus import Resource
 
@@ -28,6 +29,7 @@ class ZodiacResource(Resource):
             (tuple): Returns status, success message and relevant zodiac details
         """
         sign_data = sign_validation().parse_args(strict=True)
+        check_existing_signs(signs_ns, sign_data)
         sign_data['positive_traits'] = str(sign_data['positive_traits'])
         sign_data['negative_traits'] = str(sign_data['negative_traits'])
         sign_data['best_compatibility'] = str(sign_data['best_compatibility'])

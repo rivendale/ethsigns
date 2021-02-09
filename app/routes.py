@@ -1,10 +1,9 @@
+from flask_login.utils import logout_user
 from app import app, db
-from flask import render_template, url_for, redirect, flash, request
-from werkzeug.urls import url_parse
+from flask import render_template, url_for, redirect, flash
 from flask_login import current_user, login_user, login_required
-from app.forms import *
-from app.models import *
-from datetime import datetime
+from app.forms import LoginForm, ManageSigns, SignsForm, RegistrationForm
+from app.models import Sign, User
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -51,7 +50,6 @@ def index(typ, sym):
     if form.validate_on_submit():
         chkmonth = form.birthmonth.data
         chkday = form.birthday.data
-        chkyear = form.birthyear.data
         typ = " "
         sym = " "
         checksign = Sign.query.filter_by(year=form.birthyear.data).first()
@@ -78,8 +76,10 @@ def manage():
 
     if form.validate_on_submit():
         checkfirst = Sign.query.filter_by(year=form.startyear.data).first()
-        addsign = Sign(year=form.startyear.data, month=form.startmonth.data, day=form.startday.data,
-                       bsign=form.beforesign.data, btype=form.beforetype.data, dsign=form.duringsign.data, dtype=form.duringtype.data)
+        addsign = Sign(year=form.startyear.data, month=form.startmonth.data,
+                       day=form.startday.data,
+                       bsign=form.beforesign.data, btype=form.beforetype.data,
+                       dsign=form.duringsign.data, dtype=form.duringtype.data)
         if checkfirst is None:
             db.session.add(addsign)
             db.session.commit()
