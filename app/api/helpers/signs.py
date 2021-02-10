@@ -15,3 +15,15 @@ def check_existing_signs(ns, sign):
     if z_sign:
         ns.abort(400, errors={"sign": "Sign already exist"}, message="sign exists!")
     return z_sign
+
+
+def return_not_found(ns, entity):
+    """
+    Function return a not found message
+    Args:
+        entity (str): entity name
+    Return:
+        (str): entity not found message
+    """
+    ns.abort(404, errors={"sign": f"{entity} not found!"},
+             message="Entity not found")

@@ -31,6 +31,7 @@ jobs:
           ${{ runner.os }}-pip-
           ${{ runner.os }}-
     - name: Install dependencies
+      if: steps.cache.outputs.cache-hit != 'true'
       run: |
         python -m venv ~/pip-env/
         source ~/pip-env/bin/activate
@@ -41,7 +42,11 @@ jobs:
         # stop the build if there are Python syntax errors or undefined names
         source ~/pip-env/bin/activate
         flake8 .
+
     - name: Test with pytest
+      env:
+        SQLALCHEMY_TRACK_MODIFICATIONS: "false"
+        SECRET_KEY: very-secret-key
       run: |
         source ~/pip-env/bin/activate
         coverage run -m pytest

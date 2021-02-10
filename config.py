@@ -44,6 +44,7 @@ class TestingConfig(Config):
         default='sqlite:///' + path.join(basedir, 'ethsigns-test.db'))
     FLASK_ENV = 'testing'
     API_BASE_URL_V1 = "/api/v1"
+    WTF_CSRF_ENABLED = False
 
 
 config = {

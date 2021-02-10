@@ -22,7 +22,6 @@ signs_path = "signs/"
 api.add_namespace(signs_ns, path=signs_path)
 
 
-"""Return app object given config object."""
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 app.config.from_object(AppConfig)
@@ -42,5 +41,5 @@ def swagger_ui():
 
 app.register_blueprint(api_blueprint)
 
-from app.api import views
 from app import routes
+from app.api import views

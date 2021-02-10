@@ -23,7 +23,7 @@ Any pertinent information that should be considered
 
 **What are the relevant github issue**
 
-Include the github issue tracker story ID and the link to the issue
+Include the GitHub issue tracker story ID and the link to the issue
 
 **Screenshots (if appropriate)**
 

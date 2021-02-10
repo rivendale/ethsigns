@@ -53,6 +53,7 @@ def index(typ, sym):
         typ = " "
         sym = " "
         checksign = Sign.query.filter_by(year=form.birthyear.data).first()
+        # import pdb; pdb.set_trace()
         if checksign is not None:
             if (chkmonth > checksign.month):
                 typ = checksign.dtype
@@ -73,7 +74,6 @@ def index(typ, sym):
 @login_required
 def manage():
     form = ManageSigns()
-
     if form.validate_on_submit():
         checkfirst = Sign.query.filter_by(year=form.startyear.data).first()
         addsign = Sign(year=form.startyear.data, month=form.startmonth.data,

@@ -1,5 +1,5 @@
 """Module for Zodiac resource"""
-from app.api.helpers.signs import check_existing_signs
+from app.api.helpers.signs import check_existing_signs, return_not_found
 from app import api
 from flask_restplus import Resource
 
@@ -11,9 +11,12 @@ from app.api.helpers.constants import ZODIAC_ANIMALS
 
 
 @api.route('/signs/')
-class ZodiacResource(Resource):
-    """Resource class for adding a zodiac sign"""
-
+class CreateListZodiacResource(Resource):
+    """
+    Resource to handle:
+        - adding a zodiac sign
+        - list zodiac signs
+    """
     @signs_ns.doc(description="create a new sign")
     @signs_ns.expect(sign_validation())
     @signs_ns.marshal_with(signs_schema, envelope='sign')
@@ -40,3 +43,29 @@ class ZodiacResource(Resource):
         sign = Zodiacs(sign_data)
         sign.save()
         return sign, 201
+
+
+@api.route('/signs/<int:sign_id>/')
+class GetPatchDeleteZodiacResource(Resource):
+    """
+    Class to handle:
+        - retrieving a single sign
+        - updating a single sign
+        - deleting a single sign
+    """
+    @signs_ns.doc(description="fetch specific sign using sign Id")
+    @signs_ns.marshal_with(signs_schema, envelope='sign')
+    def get(self, sign_id):
+        """
+        Function to retrieve a sign
+        Args:
+            sign_id (int): sign ID
+        Returns:
+            sign (obj): sign data
+        """
+        sign = Zodiacs.query.filter_by(
+            id=sign_id).first()
+        if not sign:
+            return_not_found(signs_ns, 'sign')
+
+        return sign
