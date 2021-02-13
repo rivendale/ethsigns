@@ -1,8 +1,9 @@
+from flask import flash, redirect, render_template, url_for
+from flask_login import current_user, login_required, login_user
 from flask_login.utils import logout_user
+
 from app import app, db
-from flask import render_template, url_for, redirect, flash
-from flask_login import current_user, login_user, login_required
-from app.forms import LoginForm, ManageSigns, SignsForm, RegistrationForm
+from app.forms import LoginForm, ManageSigns, RegistrationForm, SignsForm
 from app.models import Sign, User
 
 

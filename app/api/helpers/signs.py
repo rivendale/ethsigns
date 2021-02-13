@@ -1,11 +1,14 @@
+import datetime
 from app.api.models.signs import Zodiacs
+from flask import request
+from functools import wraps
+from app.api import signs_ns as ns
 
 
-def check_existing_signs(ns, sign):
+def check_existing_signs(sign):
     """
     Function to check if signs already exists
     Args:
-        ns(obj): namespace object
         sign(dict): sign object
     Return:
         user(obj): sign object
@@ -27,3 +30,62 @@ def return_not_found(ns, entity):
     """
     ns.abort(404, errors={"sign": f"{entity} not found!"},
              message="Entity not found")
+
+
+def get_url_args():
+    """
+    Function get request parameters
+    Return:
+        user_data (dict): user data options
+    """
+    user_data = {}
+    user_data['year'] = request.args.get('year', type=int)
+    user_data['month'] = request.args.get('month', type=int)
+    user_data['day'] = request.args.get('day', type=int)
+
+    return user_data
+
+
+def date_validator(func):
+    """Validates date of birth parameter
+
+    Raises error if date of birth is invalid
+
+    Args:
+        func(function): Decorated function
+
+    Returns:
+        function
+
+    Raises:
+        Throws error if date is not valid
+    """
+
+    @wraps(func)
+    def decorated_function(*args, **kwargs):
+        query = request.args.to_dict()
+
+        # normalize the query keys
+        norm_query = {
+            key.lower().strip(): value
+            for key, value in query.items()
+        }
+        data = {}
+        try:
+            year = int(norm_query.get('year', ""))
+            month = int(norm_query.get('month', ""))
+            day = int(norm_query.get('day', ""))
+            data['year'] = year
+            data['month'] = month
+            data['day'] = day
+            try:
+                datetime.datetime(year=year, month=month, day=day)
+            except ValueError as error:
+                ns.abort(404, errors={"date_of_birth": str(error)},
+                         message="Error!")
+        except ValueError:
+            ns.abort(404, errors={"date_of_birth": "Date values should be integers"},
+                     message="Error!")
+        return func(*args, data, **kwargs)
+
+    return decorated_function

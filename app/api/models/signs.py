@@ -16,13 +16,11 @@ class Zodiacs(db.Model, ModelOperations):
     report = db.Column(db.String(4000), index=True)
 
     def __init__(self, sign):
-        """
-        Constructor object
+        """Constructor object
         Args:
             sign (dict): zodiac sign data to be saved in DB
         Returns:
-            None
-        """
+            None"""
         self.name = sign.get('name')
         self.force = sign.get('force')
         self.element = sign.get('element')
