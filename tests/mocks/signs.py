@@ -1,4 +1,4 @@
-VALID_SIGN = {
+VALID_YEAR_SIGN = {
     "name": "Tiger",
     "force": "Yang",
     "element": "Wood",
@@ -14,19 +14,18 @@ VALID_SIGN = {
     ]
 }
 
+VALID_MONTH_SIGN = {
+	"month": 2,
+	"animal": "Tiger"
+}
 
-
-
-
-
-
-VALID_SIGN_REQUEST = {
+VALID_YEAR_SIGN_REQUEST = {
     "birthyear": 1995,
     "birthmonth": 2,
     "birthday": 31,
 }
 
-VALID_SIGN_OBJ = {
+VALID_YEAR_SIGN_OBJ = {
     "startyear": 1997,
     "startmonth": 2,
     "startday": 3,

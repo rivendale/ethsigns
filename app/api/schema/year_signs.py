@@ -22,7 +22,7 @@ class FormatNested(fields.Raw):
         return values
 
 
-signs_schema = {
+year_signs_schema = {
     'id': fields.Integer(description='The Sign identifier'),
     'name': fields.String(description='Sign name'),
     'element': fields.String(description='Sign element'),
@@ -39,4 +39,4 @@ signs_schema = {
     'report': FormatNested(attribute='report', description="Sign's report"),
 }
 
-signs_schema = signs_ns.model('Zodiacs', signs_schema)
+year_signs_schema = signs_ns.model('Zodiacs', year_signs_schema)

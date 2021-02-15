@@ -2,7 +2,7 @@
 Module of tests for user forms
 """
 from ..mocks.users import VALID_USER
-from ..mocks.signs import VALID_SIGN_OBJ, VALID_SIGN_REQUEST
+from ..mocks.signs import VALID_YEAR_SIGN_OBJ, VALID_YEAR_SIGN_REQUEST
 
 
 class TestUserForms:
@@ -130,7 +130,7 @@ class TestUserForms:
         """
         client.post('/register', data=VALID_USER)
         client.post('/login', data=VALID_USER)
-        response = client.post('/index', data=VALID_SIGN_REQUEST)
+        response = client.post('/index', data=VALID_YEAR_SIGN_REQUEST)
         assert response.status_code == 302
         assert '<a href="/index/wood/pig/">/' in response.data.decode("utf-8")
 
@@ -143,7 +143,7 @@ class TestUserForms:
         """
         client.post('/register', data=VALID_USER)
         client.post('/login', data=VALID_USER)
-        data = VALID_SIGN_REQUEST.copy()
+        data = VALID_YEAR_SIGN_REQUEST.copy()
         data['birthyear'] = 1996
         response = client.post('/index', data=data)
         assert response.status_code == 302
@@ -158,7 +158,7 @@ class TestUserForms:
         """
         client.post('/register', data=VALID_USER)
         client.post('/login', data=VALID_USER)
-        data = VALID_SIGN_REQUEST.copy()
+        data = VALID_YEAR_SIGN_REQUEST.copy()
         data['birthyear'] = 1996
         data['birthday'] = 2
         data['birthmonth'] = 2
@@ -186,7 +186,7 @@ class TestUserForms:
         """
         client.post('/register', data=VALID_USER)
         client.post('/login', data=VALID_USER)
-        response = client.post('/manage', data=VALID_SIGN_OBJ)
+        response = client.post('/manage', data=VALID_YEAR_SIGN_OBJ)
         assert response.status_code == 302
         assert '<a href="/manage">/manage</a>' in response.data.decode("utf-8")
 
@@ -199,8 +199,8 @@ class TestUserForms:
         """
         client.post('/register', data=VALID_USER)
         client.post('/login', data=VALID_USER)
-        response = client.post('/manage', data=VALID_SIGN_OBJ)
-        client.post('/manage', data=VALID_SIGN_OBJ)
+        response = client.post('/manage', data=VALID_YEAR_SIGN_OBJ)
+        client.post('/manage', data=VALID_YEAR_SIGN_OBJ)
         assert response.status_code == 302
         assert '<a href="/manage">/manage</a>' in response.data.decode("utf-8")
 
@@ -213,7 +213,7 @@ class TestUserForms:
         """
         client.post('/register', data=VALID_USER)
         client.post('/login', data=VALID_USER)
-        client.post('/manage', data=VALID_SIGN_OBJ)
+        client.post('/manage', data=VALID_YEAR_SIGN_OBJ)
         response = client.get('/manage')
         assert response.status_code == 200
         assert 'ETH Signs ' in response.data.decode("utf-8")
@@ -227,7 +227,7 @@ class TestUserForms:
         """
         client.post('/register', data=VALID_USER)
         client.post('/login', data=VALID_USER)
-        client.post('/manage', data=VALID_SIGN_OBJ)
+        client.post('/manage', data=VALID_YEAR_SIGN_OBJ)
         response = client.get('/rmsym/1997')
         assert response.status_code == 302
         assert '<a href="/manage">/manage</a>' in response.data.decode("utf-8")
