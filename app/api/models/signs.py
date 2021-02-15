@@ -3,6 +3,9 @@ from .base import ModelOperations
 
 
 class Zodiacs(db.Model, ModelOperations):
+    """
+    Year zodiac sign model
+    """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60), index=True, nullable=False)
     element = db.Column(db.String(60), index=True, nullable=False)
@@ -34,3 +37,25 @@ class Zodiacs(db.Model, ModelOperations):
 
     def __repr__(self):
         return '<Zodiac - {}>'.format(self.name)
+
+
+class MonthSign(db.Model, ModelOperations):
+    """
+    Month zodiac sign model
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    month = db.Column(db.Integer, index=True,
+                      nullable=False, unique=True)
+    animal = db.Column(db.String(60), index=True, nullable=False)
+
+    def __init__(self, sign):
+        """Constructor object
+        Args:
+            sign (dict): zodiac sign data to be saved in DB
+        Returns:
+            None"""
+        self.month = sign.get('month')
+        self.animal = sign.get('animal')
+
+    def __repr__(self):
+        return '<MonthSign - {}>'.format(self.month)

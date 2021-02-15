@@ -76,7 +76,7 @@ def validate_name(value):
     """
     animals = [x.upper() for x in [*ZODIAC_ANIMALS]]
     if not re.match(STRING_REGEX, value):
-        raise ValueError("Provide a valid name")
+        raise ValueError("Cannot be empty")
 
     if value.upper() not in animals:
         raise ValueError(f"Options are {[*ZODIAC_ANIMALS]}")
@@ -96,6 +96,28 @@ def validate_url(value):
     """
     if not re.match(URL_REGEX, value):
         raise ValueError("Provide a valid url")
+
+    return value
+
+
+def validate_month(value):
+    """
+    Function to validate the zodiac sign month
+    Args:
+        value (str): zodiac sign month to be validated
+    Raises:
+        (ValueError): Raise ValueError if the zodiac sign month invalid
+    Return:
+        value (str): valid zodiac sign month
+    """
+    month = ""
+    try:
+        month = int(value)
+    except ValueError:
+        raise ValueError("Month must be an integer")
+
+    if month < 1 or month > 12:
+        raise ValueError("Month out of range")
 
     return value
 
@@ -157,4 +179,25 @@ def sign_validation(create=True):
                         required=create, help='Image url:',
                         case_sensitive=False)
 
+    return parser
+
+
+def month_sign_validation(create=True):
+    """
+    Function to add month sign validation to the parser
+    Args:
+        create (Bool): 'required' option
+    Return:
+        parser (obj): request parser
+    """
+
+    parser = reqparse.RequestParser(trim=True, bundle_errors=True)
+    parser.add_argument('month',
+                        type=validate_month,
+                        required=create,
+                        help='', location='json',)
+    parser.add_argument('animal',
+                        type=validate_name,
+                        required=create,
+                        help='', location='json',)
     return parser

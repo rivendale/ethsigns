@@ -2,7 +2,7 @@
 
 # Third Party Modules
 import pytest
-from app.api.models.signs import Zodiacs
+from app.api.models.signs import Zodiacs, MonthSign
 from app.models import Sign
 from app import db
 
@@ -14,12 +14,22 @@ def new_test_sign(app):
         "name": "Tiger",
         "force": "Yang",
         "element": "Wood",
+        "base_index": 2,
         "image_url": "http://image.png",
         "best_compatibility": "['Horse', 'Dog']",
         "worst_compatibility": "['Snake', 'Monkey']",
         "positive_traits": "['Ambitious', 'Brave', 'Dynamic']",
         "negative_traits": "['Aggressive', 'Arrogant', 'Disobedient']",
         "report": "['Your personality represents power, courage, and action ']"
+    })
+
+
+@pytest.fixture(scope='function')
+def new_month_sign(app):
+
+    return MonthSign({
+        "month": 2,
+        "animal": "Tiger"
     })
 
 

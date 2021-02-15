@@ -1,1 +1,1 @@
-from .signs import Zodiacs
+from .signs import Zodiacs, MonthSign
