@@ -3,6 +3,7 @@ import ast
 
 from app.api import signs_ns
 from flask_restplus import fields
+from .month_signs import month_signs_schema
 
 
 class FormatNested(fields.Raw):
@@ -39,4 +40,12 @@ year_signs_schema = {
     'report': FormatNested(attribute='report', description="Sign's report"),
 }
 
+signs_schema = year_signs_schema.copy()
 year_signs_schema = signs_ns.model('Zodiacs', year_signs_schema)
+
+
+signs_schema.update({
+    'month': fields.Nested(month_signs_schema, skip_none=True,
+                           attribute="month", description="Sign's month details"),
+})
+signs_schema = signs_ns.model('Zodiacs', signs_schema)

@@ -10,6 +10,24 @@ BASE_URL = AppConfig.API_BASE_URL_V1
 class TestGetSignDetails:
     """Test for the get sign details endpoint"""
 
+    def test_list_signs_succeeds(
+            self, client, init_db, new_test_sign):
+        """
+        Test that sign details are successfully returned when a valid
+        sign id is provided
+        """
+        new_test_sign.save()
+        response = client.get(
+            f'{BASE_URL}/signs/year/')
+        response_json = json.loads(response.data.decode("utf-8"))
+
+        assert response.status_code == 200
+        sign_data = response_json['signs']
+        assert type(sign_data) == list
+        assert sign_data[0]['id'] == new_test_sign.id
+        assert sign_data[0]['name'] == new_test_sign.name
+        assert sign_data[0]['element'] == new_test_sign.element
+
     def test_get_sign_with_valid_id_succeeds(
             self, client, init_db, new_test_sign):
         """
