@@ -1,16 +1,16 @@
 """Module for Zodiac resource"""
-from app.api.helpers.signs import (check_existing_year_signs,
-                                   return_not_found, date_validator,
-                                   check_existing_month_signs)
 from app import api
-from flask_restplus import Resource
-
-from app.api.schema import year_signs_schema
-from app.api.schema import month_signs_schema
 from app.api import signs_ns
-from app.api.validators.validators import sign_validation, month_sign_validation
-from app.api.models import Zodiacs, MonthSign
 from app.api.helpers.constants import ZODIAC_ANIMALS
+from app.api.helpers.signs import (check_existing_month_signs,
+                                   check_existing_year_signs, date_validator,
+                                   return_not_found)
+from app.api.models import MonthSign, Zodiacs
+from app.api.schema import (month_signs_schema,
+                            signs_schema, year_signs_schema)
+from app.api.validators.validators import (month_sign_validation,
+                                           sign_validation)
+from flask_restplus import Resource
 
 
 @api.route('/signs/year/')
@@ -45,6 +45,19 @@ class CreateListZodiacResource(Resource):
         sign = Zodiacs(sign_data)
         sign.save()
         return sign, 201
+
+    @signs_ns.doc(description="list year's signs")
+    @signs_ns.marshal_with(year_signs_schema, envelope='signs')
+    def get(self):
+        """
+        List years zodiac signs
+
+        Returns:
+            (tuple): Returns status and list of zodiac signs
+        """
+
+        signs = Zodiacs.query.order_by(Zodiacs.base_index.asc()).all()
+        return signs, 200
 
 
 @api.route('/signs/month/')
@@ -131,7 +144,7 @@ class GetUserZodiacResource(Resource):
                       "type": "int"
                   }})
     @date_validator
-    @signs_ns.marshal_with(year_signs_schema, envelope='sign')
+    @signs_ns.marshal_with(signs_schema, envelope='sign')
     def get(self, data, **kwargs):
         """
         Function to retrieve a sign
@@ -141,8 +154,10 @@ class GetUserZodiacResource(Resource):
             sign (obj): sign data
         """
         year = data.get("year", '')
+        month = MonthSign.query.first()
         base_year = 1948
         base_index = (year-base_year) % 12
         sign = Zodiacs.query.filter_by(
             base_index=base_index).first()
+        setattr(sign, "month", month)
         return sign

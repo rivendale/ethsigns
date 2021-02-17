@@ -43,4 +43,3 @@ app.register_blueprint(api_blueprint)
 
 from app import routes
 from app.api import views
-
