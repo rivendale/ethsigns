@@ -59,3 +59,25 @@ class MonthSign(db.Model, ModelOperations):
 
     def __repr__(self):
         return '<MonthSign - {}>'.format(self.month)
+
+
+class DaySign(db.Model, ModelOperations):
+    """
+    Day zodiac sign model
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    day = db.Column(db.String(60), index=True,
+                    nullable=False, unique=True)
+    animal = db.Column(db.String(60), index=True, nullable=False)
+
+    def __init__(self, sign):
+        """Constructor object
+        Args:
+            sign (dict): zodiac sign data to be saved in DB
+        Returns:
+            None"""
+        self.day = sign.get('day')
+        self.animal = sign.get('animal')
+
+    def __repr__(self):
+        return '<DaySign - {}>'.format(self.day)

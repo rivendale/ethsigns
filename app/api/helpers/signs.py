@@ -1,4 +1,5 @@
 import datetime
+import calendar
 from app.api.models.signs import Zodiacs, MonthSign
 from flask import request
 from functools import wraps
@@ -78,9 +79,9 @@ def date_validator(func):
             day = int(norm_query.get('day', ""))
             data['year'] = year
             data['month'] = month
-            data['day'] = day
             try:
-                datetime.datetime(year=year, month=month, day=day)
+                dob = datetime.datetime(year=year, month=month, day=day)
+                data['day'] = calendar.day_name[dob.weekday()]
             except ValueError as error:
                 ns.abort(400, errors={"date_of_birth": str(error)},
                          message="Error!")

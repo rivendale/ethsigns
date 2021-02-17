@@ -5,7 +5,7 @@ from app.api.helpers.constants import ZODIAC_ANIMALS
 from app.api.helpers.signs import (check_existing_month_signs,
                                    check_existing_year_signs, date_validator,
                                    return_not_found)
-from app.api.models import MonthSign, Zodiacs
+from app.api.models import MonthSign, Zodiacs, DaySign
 from app.api.schema import (month_signs_schema,
                             signs_schema, year_signs_schema)
 from app.api.validators.validators import (month_sign_validation,
@@ -154,10 +154,14 @@ class GetUserZodiacResource(Resource):
             sign (obj): sign data
         """
         year = data.get("year", '')
-        month = MonthSign.query.first()
+        month = data.get("month", '')
+        day = data.get("day", '')
+        month = MonthSign.query.filter_by(month=month).first()
         base_year = 1948
         base_index = (year-base_year) % 12
         sign = Zodiacs.query.filter_by(
             base_index=base_index).first()
+        day = DaySign.query.filter_by(day=day).first()
         setattr(sign, "month", month)
+        setattr(sign, "day", day)
         return sign
