@@ -15,8 +15,8 @@ VALID_YEAR_SIGN = {
 }
 
 VALID_MONTH_SIGN = {
-	"month": 2,
-	"animal": "Tiger"
+    "month": 2,
+    "animal": "Tiger"
 }
 
 VALID_YEAR_SIGN_REQUEST = {
@@ -33,4 +33,9 @@ VALID_YEAR_SIGN_OBJ = {
     "beforetype": "fire",
     "duringtype": "dog",
     "duringsign": "fire"
+}
+
+VALID_DAY_SIGN = {
+    "day": "Monday",
+    "animal": "Tiger"
 }

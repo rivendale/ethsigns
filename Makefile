@@ -4,16 +4,46 @@ clean:
 	@ echo ''
 	find . -type f -name '*.log' -delete
 
-update-db:
-	@ echo '<<<<<<<<<<updating database>>>>>>>>>'
-	flask db upgrade head
+
+venv:
+	@ echo '<<<<<<<<<<Creating virtual environment>>>>>>>>>'
+	sudo apt install python3-venv
+	python3 -m venv venv
+	@ echo ''
+
+activate:
+	@ echo '<<<<<<<<<<Activating virtual environment>>>>>>>>>'
+	source venv/bin/activate
+	@ echo ''
+
+install:
+	@ echo '<<<<<<<<<<installing requirements>>>>>>>>>'
+	pip install --upgrade pip
+	@ echo ''
+	pip install --upgrade pip setuptools
+	pip install -r requirements.txt
+
+
+init-db:
+	@ echo '<<<<<<<<<<Initialize database>>>>>>>>>'
+	flask db init
 	@ echo ''
 
 migrate:
 	@ echo '<<<<<<<<<<creating migrations>>>>>>>>>'
 	flask db stamp head
-	@ echo ''
 	flask db migrate --message="$(message)"
+	@ echo ''
+
+update-db:
+	@ echo '<<<<<<<<<<updating database>>>>>>>>>'
+	flask db upgrade head
+	@ echo ''
+
+downgrade-db:
+	@ echo '<<<<<<<<<<undo last migration>>>>>>>>>'
+	flask db downgrade
+	@ echo ''
 
 init-day-signs:
 	@ echo '<<<<<<<<<<initializing day sign>>>>>>>>>'
@@ -29,13 +59,6 @@ update:
 	@ echo '<<<<<<<<<<updating requirements>>>>>>>>>'
 	pip freeze | grep -v "pkg-resources" > requirements.txt
 	@ echo ''
-
-install:
-	@ echo '<<<<<<<<<<installing requirements>>>>>>>>>'
-	pip install --upgrade pip
-	@ echo ''
-	pip install --upgrade pip setuptools
-	pip install -r requirements.txt
 
 test:
 	@ echo '<<<<<<<<<<Run tests>>>>>>>>>'

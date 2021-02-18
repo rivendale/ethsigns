@@ -6,7 +6,7 @@ from app.api.helpers.signs import (check_existing_month_signs,
                                    check_existing_year_signs, date_validator,
                                    return_not_found)
 from app.api.models import MonthSign, Zodiacs, DaySign
-from app.api.schema import (month_signs_schema,
+from app.api.schema import (month_signs_schema, day_signs_schema,
                             signs_schema, year_signs_schema)
 from app.api.validators.validators import (month_sign_validation,
                                            sign_validation)
@@ -47,7 +47,7 @@ class CreateListZodiacResource(Resource):
         return sign, 201
 
     @signs_ns.doc(description="list year's signs")
-    @signs_ns.marshal_with(year_signs_schema, envelope='signs')
+    @signs_ns.marshal_with(year_signs_schema, envelope='signs', as_list=True)
     def get(self):
         """
         List years zodiac signs
@@ -57,43 +57,6 @@ class CreateListZodiacResource(Resource):
         """
 
         signs = Zodiacs.query.order_by(Zodiacs.base_index.asc()).all()
-        return signs, 200
-
-
-@api.route('/signs/month/')
-class CreateListMonthSignsResource(Resource):
-    """
-    Resource to handle:
-        - adding a month's zodiac sign
-        - list months zodiac signs
-    """
-    @signs_ns.doc(description="create a new month sign")
-    @signs_ns.expect(month_sign_validation())
-    @signs_ns.marshal_with(month_signs_schema, envelope='sign')
-    def post(self):
-        """
-        Add a month's zodiac sign
-
-        Returns:
-            (tuple): Returns status and relevant zodiac details
-        """
-        sign_data = month_sign_validation().parse_args(strict=True)
-        check_existing_month_signs(sign_data)
-        sign = MonthSign(sign_data)
-        sign.save()
-        return sign, 201
-
-    @signs_ns.doc(description="list month's signs")
-    @signs_ns.marshal_with(month_signs_schema, envelope='signs')
-    def get(self):
-        """
-        List months zodiac signs
-
-        Returns:
-            (tuple): Returns status and list of zodiac signs
-        """
-
-        signs = MonthSign.query.order_by(MonthSign.month.asc()).all()
         return signs, 200
 
 
@@ -165,3 +128,61 @@ class GetUserZodiacResource(Resource):
         setattr(sign, "month", month)
         setattr(sign, "day", day)
         return sign
+
+
+@api.route('/signs/month/')
+class CreateListMonthSignsResource(Resource):
+    """
+    Resource to handle:
+        - adding a month's zodiac sign
+        - list months zodiac signs
+    """
+    @signs_ns.doc(description="create a new month sign")
+    @signs_ns.expect(month_sign_validation())
+    @signs_ns.marshal_with(month_signs_schema, envelope='sign')
+    def post(self):
+        """
+        Add a month's zodiac sign
+
+        Returns:
+            (tuple): Returns status and relevant zodiac details
+        """
+        sign_data = month_sign_validation().parse_args(strict=True)
+        check_existing_month_signs(sign_data)
+        sign = MonthSign(sign_data)
+        sign.save()
+        return sign, 201
+
+    @signs_ns.doc(description="list month's signs")
+    @signs_ns.marshal_with(month_signs_schema, envelope='signs', as_list=True)
+    def get(self):
+        """
+        List months zodiac signs
+
+        Returns:
+            (tuple): Returns status and list of zodiac signs
+        """
+
+        signs = MonthSign.query.order_by(MonthSign.month.asc()).all()
+        return signs, 200
+
+
+@api.route('/signs/day/')
+class CreateListdaySignsResource(Resource):
+    """
+    Resource to handle:
+        - list days zodiac signs
+    """
+
+    @signs_ns.doc(description="list day's signs")
+    @signs_ns.marshal_with(day_signs_schema, envelope='signs', as_list=True)
+    def get(self):
+        """
+        List days zodiac signs
+
+        Returns:
+            (tuple): Returns status and list of zodiac signs
+        """
+
+        signs = DaySign.query.all()
+        return signs, 200
