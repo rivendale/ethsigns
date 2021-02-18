@@ -6,8 +6,9 @@ from flask_restplus import fields
 
 month_signs_schema = {
     'id': fields.Integer(description='The Month Sign identifier'),
-    'month': fields.String(description='Month Sign month',
-                           attribute=lambda x: calendar.month_name[x.month]),
+    'month': fields.String(
+        description='Month Sign month',
+        attribute=lambda x: calendar.month_name[x.month] if x else None),
     'animal': fields.String(description='Month Sign animal')
 }
 
