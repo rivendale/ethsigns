@@ -43,16 +43,16 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route('/', methods=['GET', 'POST'], defaults={"sym": " ", "typ": " "})
-@app.route('/index', methods=['GET', 'POST'], defaults={"sym": " ", "typ": " "})
+@app.route('/', methods=['GET', 'POST'], defaults={"sym": "", "typ": ""})
+@app.route('/index', methods=['GET', 'POST'], defaults={"sym": "", "typ": ""})
 @app.route('/index/<typ>/<sym>/', methods=['GET', 'POST'])
 def index(typ, sym):
     form = SignsForm()
     if form.validate_on_submit():
         chkmonth = form.birthmonth.data
         chkday = form.birthday.data
-        typ = " "
-        sym = " "
+        typ = ""
+        sym = ""
         checksign = Sign.query.filter_by(year=form.birthyear.data).first()
         # import pdb; pdb.set_trace()
         if checksign is not None:
