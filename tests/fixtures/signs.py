@@ -2,7 +2,7 @@
 
 # Third Party Modules
 import pytest
-from app.api.models.signs import Zodiacs, MonthSign
+from app.api.models.signs import Zodiacs, MonthSign, DaySign
 from app.models import Sign
 from app import db
 
@@ -30,6 +30,15 @@ def new_month_sign(app):
     return MonthSign({
         "month": 2,
         "animal": "Tiger"
+    })
+
+
+@pytest.fixture(scope='function')
+def new_day_sign(app):
+
+    return DaySign({
+        "day": "Tuesday",
+        "animal": "Pig"
     })
 
 

@@ -108,3 +108,19 @@ class TestGetSignDetails:
         response_json = json.loads(response.data.decode("utf-8"))
         assert response.status_code == 400
         assert response_json['errors']['date_of_birth'] == 'Date values should be integers'
+
+    def test_list_day_signs_succeeds(
+            self, client, init_db, new_day_sign):
+        """
+        Test that day signs can be listed
+        """
+        new_day_sign.save()
+        response = client.get(
+            f'{BASE_URL}/signs/day/')
+        response_json = json.loads(response.data.decode("utf-8"))
+
+        assert response.status_code == 200
+        sign_data = response_json['signs']
+        assert type(sign_data) == list
+        assert sign_data[0]['id'] == new_day_sign.id
+        assert sign_data[0]['animal'] == new_day_sign.animal
