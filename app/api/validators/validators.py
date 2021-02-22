@@ -218,3 +218,18 @@ def day_sign_validation(create=True):
                         required=create,
                         help='', location='json',)
     return parser
+
+
+def month_sign_update_validation(create=True):
+    """
+    Function to add month sign update validation to the parser
+    Args:
+        create (Bool): 'required' option
+    Return:
+        parser (obj): request parser
+    """
+
+    parser = month_sign_validation(create)
+    parser.remove_argument("month")
+
+    return parser
