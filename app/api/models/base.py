@@ -13,3 +13,11 @@ class ModelOperations(object):
         db.session.add(self)
         db.session.commit()
         return self
+
+    def update(self, **kwargs):
+        """
+        update entries
+        """
+        for field, value in kwargs.items():
+            setattr(self, field, value)
+        db.session.commit()

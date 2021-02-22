@@ -9,7 +9,7 @@ from app.api.models import MonthSign, Zodiacs, DaySign
 from app.api.schema import (month_signs_schema, day_signs_schema,
                             signs_schema, year_signs_schema)
 from app.api.validators.validators import (month_sign_validation,
-                                           sign_validation)
+                                           sign_validation, day_sign_validation)
 from flask_restplus import Resource
 
 
@@ -186,3 +186,52 @@ class CreateListdaySignsResource(Resource):
 
         signs = DaySign.query.all()
         return signs, 200
+
+
+@api.route('/signs/day/<int:sign_id>/')
+class GetUpdateDaySignsResource(Resource):
+    """
+    Resource to handle:
+        - get day zodiac sign
+        - update day zodiac sign
+    """
+
+    @signs_ns.doc(description="get day sign")
+    @signs_ns.marshal_with(day_signs_schema, envelope='sign')
+    def get(self, sign_id):
+        """
+        Get days zodiac signs
+
+        Args:
+            sign_id (int): day sign ID
+        Returns:
+            sign (obj): day sign data
+        """
+
+        sign = DaySign.query.filter_by(
+            id=sign_id).first()
+        if not sign:
+            return_not_found(signs_ns, 'sign')
+
+        return sign, 200
+
+    @signs_ns.doc(description="update day sign")
+    @signs_ns.expect(day_sign_validation())
+    @signs_ns.marshal_with(day_signs_schema, envelope='sign')
+    def patch(self, sign_id):
+        """
+        Update day zodiac sign
+
+        Args:
+            sign_id (int): day sign ID
+        Returns:
+            sign (obj): day sign data
+        """
+
+        sign_data = day_sign_validation().parse_args(strict=True)
+        sign = DaySign.query.filter_by(
+            id=sign_id).first()
+        if not sign:
+            return_not_found(signs_ns, 'sign')
+        sign.update(**sign_data)
+        return sign, 200

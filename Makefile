@@ -4,7 +4,6 @@ clean:
 	@ echo ''
 	find . -type f -name '*.log' -delete
 
-
 venv:
 	@ echo '<<<<<<<<<<Creating virtual environment>>>>>>>>>'
 	sudo apt install python3-venv
@@ -22,7 +21,6 @@ install:
 	@ echo ''
 	pip install --upgrade pip setuptools
 	pip install -r requirements.txt
-
 
 init-db:
 	@ echo '<<<<<<<<<<Initialize database>>>>>>>>>'
