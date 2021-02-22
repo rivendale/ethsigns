@@ -2,7 +2,6 @@
 
 from config import AppConfig
 from flask import json
-from tests.mocks.signs import VALID_YEAR_SIGN
 
 BASE_URL = AppConfig.API_BASE_URL_V1
 
@@ -124,3 +123,19 @@ class TestGetSignDetails:
         assert type(sign_data) == list
         assert sign_data[0]['id'] == new_day_sign.id
         assert sign_data[0]['animal'] == new_day_sign.animal
+
+    def test_get_day_sign_succeeds(
+            self, client, init_db, new_day_sign_two):
+        """
+        Test that day sign can be fetched
+        """
+        new_day_sign_two.save()
+        response = client.get(
+            f'{BASE_URL}/signs/day/{new_day_sign_two.id}/')
+        response_json = json.loads(response.data.decode("utf-8"))
+
+        assert response.status_code == 200
+        sign_data = response_json['sign']
+        assert sign_data['id'] == new_day_sign_two.id
+        assert sign_data['animal'] == new_day_sign_two.animal
+

@@ -1,5 +1,5 @@
-from flask_restplus import Namespace
 from flask import Blueprint
+from flask_restplus import Namespace
 
 api_blueprint = Blueprint('api_blueprint', __name__, url_prefix='/api/v1')
 

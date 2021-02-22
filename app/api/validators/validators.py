@@ -201,3 +201,20 @@ def month_sign_validation(create=True):
                         required=create,
                         help='', location='json',)
     return parser
+
+
+def day_sign_validation(create=True):
+    """
+    Function to add day sign validation to the parser
+    Args:
+        create (Bool): 'required' option
+    Return:
+        parser (obj): request parser
+    """
+
+    parser = reqparse.RequestParser(trim=True, bundle_errors=True)
+    parser.add_argument('animal',
+                        type=validate_name,
+                        required=create,
+                        help='', location='json',)
+    return parser

@@ -24,7 +24,7 @@ def new_test_sign(app):
     })
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='session')
 def new_month_sign(app):
 
     return MonthSign({
@@ -39,6 +39,15 @@ def new_day_sign(app):
     return DaySign({
         "day": "Tuesday",
         "animal": "Pig"
+    })
+
+
+@pytest.fixture(scope='function')
+def new_day_sign_two(app):
+
+    return DaySign({
+        "day": "Monday",
+        "animal": "Sheep"
     })
 
 

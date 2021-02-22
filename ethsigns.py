@@ -1,6 +1,8 @@
-from app import app, db
 from flask_script import Manager, Shell
+
+from app import app, db
 from app.models import User
+
 manager = Manager(app)
 
 
@@ -27,8 +29,8 @@ def init_db():
 @db_manager.command
 def init_day_sign():
     with app.app_context():
-        from app.api.models import DaySign
         from app.api.fixtures import DAY_FIXTURES
+        from app.api.models import DaySign
         for i in DAY_FIXTURES:
             if not DaySign.query.filter_by(day=i['day']).first():
                 day = DaySign(i)
@@ -38,8 +40,8 @@ def init_day_sign():
 @db_manager.command
 def init_month_sign():
     with app.app_context():
-        from app.api.models import MonthSign
         from app.api.fixtures import MONTH_FIXTURE
+        from app.api.models import MonthSign
         for i in MONTH_FIXTURE:
             if not MonthSign.query.filter_by(month=i['month']).first():
                 month = MonthSign(i)
