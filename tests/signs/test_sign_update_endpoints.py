@@ -34,3 +34,29 @@ class TestUpdateSignDetails:
         response_json = json.loads(response.data.decode("utf-8"))
         assert response.status_code == 404
         assert response_json['errors']['sign'] == "sign not found!"
+
+    def test_update_month_sign_succeeds(
+            self, client, init_db, new_month_sign, headers):
+        """
+        Test that month sign can be updated
+        """
+        new_month_sign.save()
+        response = client.patch(
+            f'{BASE_URL}/signs/month/{new_month_sign.id}/',
+            data=json.dumps({"animal": "Snake"}), headers=headers)
+        response_json = json.loads(response.data.decode("utf-8"))
+        assert response.status_code == 200
+        sign_data = response_json['sign']
+        assert sign_data['animal'] == "Snake"
+
+    def test_update_non_existent_month_sign_fails(
+            self, client, init_db, headers):
+        """
+        Test that non existent month sign can be updated
+        """
+        response = client.patch(
+            f'{BASE_URL}/signs/month/123/',
+            data=json.dumps({"animal": "Snake"}), headers=headers)
+        response_json = json.loads(response.data.decode("utf-8"))
+        assert response.status_code == 404
+        assert response_json['errors']['sign'] == "sign not found!"

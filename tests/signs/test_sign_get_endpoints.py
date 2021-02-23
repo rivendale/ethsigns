@@ -139,3 +139,17 @@ class TestGetSignDetails:
         assert sign_data['id'] == new_day_sign_two.id
         assert sign_data['animal'] == new_day_sign_two.animal
 
+    def test_get_month_sign_succeeds(
+            self, client, init_db, new_month_sign_two):
+        """
+        Test that month sign can be fetched
+        """
+        new_month_sign_two.save()
+        response = client.get(
+            f'{BASE_URL}/signs/month/{new_month_sign_two.id}/')
+        response_json = json.loads(response.data.decode("utf-8"))
+
+        assert response.status_code == 200
+        sign_data = response_json['sign']
+        assert sign_data['id'] == new_month_sign_two.id
+        assert sign_data['animal'] == new_month_sign_two.animal

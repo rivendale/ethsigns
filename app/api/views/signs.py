@@ -9,6 +9,7 @@ from app.api.models import MonthSign, Zodiacs, DaySign
 from app.api.schema import (month_signs_schema, day_signs_schema,
                             signs_schema, year_signs_schema)
 from app.api.validators.validators import (month_sign_validation,
+                                           month_sign_update_validation,
                                            sign_validation, day_sign_validation)
 from flask_restplus import Resource
 
@@ -230,6 +231,55 @@ class GetUpdateDaySignsResource(Resource):
 
         sign_data = day_sign_validation().parse_args(strict=True)
         sign = DaySign.query.filter_by(
+            id=sign_id).first()
+        if not sign:
+            return_not_found(signs_ns, 'sign')
+        sign.update(**sign_data)
+        return sign, 200
+
+
+@api.route('/signs/month/<int:sign_id>/')
+class GetUpdateMonthSignsResource(Resource):
+    """
+    Resource to handle:
+        - get month zodiac sign
+        - update Month zodiac sign
+    """
+
+    @signs_ns.doc(description="get month sign")
+    @signs_ns.marshal_with(month_signs_schema, envelope='sign')
+    def get(self, sign_id):
+        """
+        Get Months zodiac signs
+
+        Args:
+            sign_id (int): Month sign ID
+        Returns:
+            sign (obj): Month sign data
+        """
+
+        sign = MonthSign.query.filter_by(
+            id=sign_id).first()
+        if not sign:
+            return_not_found(signs_ns, 'sign')
+
+        return sign, 200
+
+    @signs_ns.doc(description="update month sign")
+    @signs_ns.expect(month_sign_update_validation())
+    @signs_ns.marshal_with(month_signs_schema, envelope='sign')
+    def patch(self, sign_id):
+        """
+        Update Month zodiac sign
+
+        Args:
+            sign_id (int): Month sign ID
+        Returns:
+            sign (obj): Month sign data
+        """
+
+        sign_data = month_sign_update_validation().parse_args(strict=True)
+        sign = MonthSign.query.filter_by(
             id=sign_id).first()
         if not sign:
             return_not_found(signs_ns, 'sign')

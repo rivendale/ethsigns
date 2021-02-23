@@ -24,12 +24,19 @@ def new_test_sign(app):
     })
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='function')
 def new_month_sign(app):
 
     return MonthSign({
         "month": 2,
         "animal": "Tiger"
+    })
+@pytest.fixture(scope='function')
+def new_month_sign_two(app):
+
+    return MonthSign({
+        "month": 1,
+        "animal": "Ox"
     })
 
 
