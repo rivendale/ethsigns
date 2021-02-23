@@ -68,9 +68,9 @@ run:
 	python ethsigns.py runserver
 	@ echo ''
 
-init-app:  update-db init-day-signs init-month-signs
-
 lint:
 	@ echo '<<<<<<<<<<linting>>>>>>>>>'
 	flake8 .
 	@ echo ''
+
+init-app:  update-db init-day-signs init-month-signs
