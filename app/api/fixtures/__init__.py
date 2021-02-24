@@ -13,7 +13,6 @@ MONTH_FIXTURE = [
     {"month": 12, "animal": "Rat"},
 ]
 
-
 DAY_FIXTURES = [
     {"day": "Monday", "animal": "Sheep"},
     {"day": "Tuesday", "animal": "Dragon"},

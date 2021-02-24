@@ -6,15 +6,13 @@ import alembic.command
 import alembic.config
 # Third-party libraries
 import pytest
+# Database
+from app import app as flask_app
+from app import db
 from flask import current_app
 from sqlalchemy.engine import reflection
 from sqlalchemy.schema import (DropConstraint, DropTable, ForeignKeyConstraint,
                                MetaData, Table)
-
-# Database
-from app import db
-from app import app as flask_app
-
 
 environ['FLASK_ENV'] = 'testing'
 
@@ -129,7 +127,6 @@ def db_drop_all(db):
 
     for table in tbs:
         conn.execute(DropTable(table))
-
     trans.commit()
 
     db.engine.execute("DROP TABLE IF EXISTS alembic_version")

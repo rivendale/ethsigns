@@ -1,6 +1,6 @@
 """Module for zodiac schema"""
-from app.api import signs_ns
 from flask_restplus import fields
+from app.api import signs_ns
 
 day_signs_schema = {
     'id': fields.Integer(description='The Day Sign identifier'),

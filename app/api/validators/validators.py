@@ -1,4 +1,4 @@
-from app.api.helpers.constants import ZODIAC_ANIMALS, ZODIAC_FORCES, ZODIAC_ELEMENTS
+from ..helpers.constants import ZODIAC_ANIMALS, ZODIAC_FORCES, ZODIAC_ELEMENTS
 import re
 from flask_restplus import reqparse
 

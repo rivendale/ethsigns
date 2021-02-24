@@ -1,8 +1,8 @@
 """Module for zodiac schema"""
 import ast
 
-from app.api import signs_ns
 from flask_restplus import fields
+from app.api import signs_ns
 from .month_signs import month_signs_schema
 from .day_signs import day_signs_schema
 

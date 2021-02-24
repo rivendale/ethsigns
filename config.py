@@ -19,8 +19,8 @@ class Config(object):
     DEBUG = False
     LOG_TO_STDOUT = getenv('LOG_TO_STDOUT', True)
     API_BASE_URL_V1 = getenv('API_BASE_URL_V1', "")
-    SWAGGER_UI_DOC_EXPANSION = 'list'
     ADMINS = getenv('ADMINS', [])
+    SWAGGER_UI_DOC_EXPANSION = 'list'
 
 
 class ProductionConfig(Config):

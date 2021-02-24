@@ -86,6 +86,27 @@ class GetPatchDeleteZodiacResource(Resource):
 
         return sign
 
+    @signs_ns.doc(description="update year sign")
+    @signs_ns.expect(sign_validation(create=False))
+    @signs_ns.marshal_with(year_signs_schema, envelope='sign')
+    def patch(self, sign_id):
+        """
+        Update year zodiac sign
+
+        Args:
+            sign_id (int): year sign ID
+        Returns:
+            sign (obj): year sign data
+        """
+
+        sign_data = sign_validation().parse_args(strict=True)
+        sign = Zodiacs.query.filter_by(
+            id=sign_id).first()
+        if not sign:
+            return_not_found(signs_ns, 'sign')
+        sign.update(**sign_data)
+        return sign, 200
+
 
 @api.route('/signs/query/')
 class GetUserZodiacResource(Resource):
