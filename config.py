@@ -11,7 +11,7 @@ load_dotenv(path.join(basedir, '.env'))
 
 class Config(object):
     """App base configuration."""
-    SECRET_KEY = getenv('SECRET_KEY', '')
+    SECRET_KEY = getenv('SECRET_KEY', 'defaultsecretkeytoavoidvirtualtservererrors@##')
     SQLALCHEMY_DATABASE_URI = getenv('DATABASE_URL',
                                      'sqlite:///' + path.join(basedir, 'ethsigns.db'))
     SQLALCHEMY_TRACK_MODIFICATIONS = False
