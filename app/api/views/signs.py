@@ -37,11 +37,8 @@ class CreateListZodiacResource(Resource):
         """
         sign_data = sign_validation().parse_args(strict=True)
         check_existing_year_signs(sign_data)
-        sign_data['positive_traits'] = str(sign_data['positive_traits'])
-        sign_data['negative_traits'] = str(sign_data['negative_traits'])
-        sign_data['best_compatibility'] = str(sign_data['best_compatibility'])
-        sign_data['worst_compatibility'] = str(sign_data['worst_compatibility'])
-        sign_data['report'] = str(sign_data['report'])
+        sign_data = {k: str(v) for k, v in sign_data.items()}
+
         sign_data['base_index'] = ZODIAC_ANIMALS.get(sign_data.get("name", '').title())
         sign = Zodiacs(sign_data)
         sign.save()
@@ -98,8 +95,9 @@ class GetPatchDeleteZodiacResource(Resource):
         Returns:
             sign (obj): year sign data
         """
-
-        sign_data = sign_validation().parse_args(strict=True)
+        sign_validation(create=False).parse_args(strict=True)
+        sign_data = signs_ns.payload
+        sign_data = {k: str(v) for k, v in sign_data.items()}
         sign = Zodiacs.query.filter_by(
             id=sign_id).first()
         if not sign:
@@ -250,7 +248,8 @@ class GetUpdateDaySignsResource(Resource):
             sign (obj): day sign data
         """
 
-        sign_data = day_sign_validation().parse_args(strict=True)
+        day_sign_validation().parse_args(strict=True)
+        sign_data = signs_ns.payload
         sign = DaySign.query.filter_by(
             id=sign_id).first()
         if not sign:
@@ -299,7 +298,8 @@ class GetUpdateMonthSignsResource(Resource):
             sign (obj): Month sign data
         """
 
-        sign_data = month_sign_update_validation().parse_args(strict=True)
+        sign_data = signs_ns.payload
+        month_sign_update_validation().parse_args(strict=True)
         sign = MonthSign.query.filter_by(
             id=sign_id).first()
         if not sign:

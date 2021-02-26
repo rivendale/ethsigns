@@ -153,3 +153,27 @@ class TestGetSignDetails:
         sign_data = response_json['sign']
         assert sign_data['id'] == new_month_sign_two.id
         assert sign_data['animal'] == new_month_sign_two.animal
+
+    def test_get_non_existent_month_sign_fails(
+            self, client, init_db):
+        """
+        Test that error is thrown when non existent month sign is fetched
+        """
+        response = client.get(
+            f'{BASE_URL}/signs/month/11/')
+        response_json = json.loads(response.data.decode("utf-8"))
+
+        assert response.status_code == 404
+        assert response_json['errors']['sign'] == "sign not found!"
+
+    def test_get_non_existent_day_sign_fails(
+            self, client, init_db):
+        """
+        Test that error is thrown when non existent day sign is fetched
+        """
+        response = client.get(
+            f'{BASE_URL}/signs/day/11/')
+        response_json = json.loads(response.data.decode("utf-8"))
+
+        assert response.status_code == 404
+        assert response_json['errors']['sign'] == "sign not found!"
