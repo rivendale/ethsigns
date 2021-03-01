@@ -56,16 +56,22 @@ def index(typ, sym):
         checksign = Sign.query.filter_by(year=form.birthyear.data).first()
         # import pdb; pdb.set_trace()
         if checksign is not None:
-            if (chkmonth > checksign.month):
-                typ = checksign.dtype
-                sym = checksign.dsign
-            else:
-                if (chkday >= checksign.day):
-                    typ = checksign.dtype
-                    sym = checksign.dsign
-                else:
+            msg = str(chkmonth) + " " + str(chkday) + " " + str(checksign.month) + " " + str(checksign.day)
+            flash(msg)
+            if (chkmonth < checksign.month):
+                typ = checksign.btype
+                sym = checksign.bsign
+            elif (chkmonth == checksign.month):
+                if chkday < checksign.day:
                     typ = checksign.btype
                     sym = checksign.bsign
+                else:
+                    typ = checksign.dtype
+                    sym = checksign.dsign
+            else: # chkmonth > checksign.month
+                typ = checksign.dtype
+                sym = checksign.dsign
+
         return redirect(url_for('index', typ=typ, sym=sym))
 
     return render_template('index.html', sym=sym, typ=typ, form=form, title='Home')
