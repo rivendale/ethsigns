@@ -56,8 +56,8 @@ def index(typ, sym):
         checksign = Sign.query.filter_by(year=form.birthyear.data).first()
         # import pdb; pdb.set_trace()
         if checksign is not None:
-            msg = str(chkmonth) + " " + str(chkday) + " " + str(checksign.month) + " " + str(checksign.day)
-            flash(msg)
+            #msg = str(chkmonth) + " " + str(chkday) + " " + str(checksign.month) + " " + str(checksign.day)
+            #flash(msg)
             if (chkmonth < checksign.month):
                 typ = checksign.btype
                 sym = checksign.bsign
