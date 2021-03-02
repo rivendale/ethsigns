@@ -1,0 +1,22 @@
+version: "3.7"
+services:
+  app:
+    restart: always
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - "5000:5000"
+    image: portfolio-app
+    volumes:
+      - .:/portfolio-app
+    entrypoint: ["/bin/bash", "-c", "/ethsigns-app/docker/start_app.sh"]
+    stdin_open: true
+    tty: true
+    environment:
+      - FLASK_APP=${FLASK_APP}
+      - DATABASE_URI=${DATABASE_URI}
+      - FLASK_ENV=${FLASK_ENV}
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=${DEBUG}
+      - SQLALCHEMY_TRACK_MODIFICATIONS=${SQLALCHEMY_TRACK_MODIFICATIONS}
