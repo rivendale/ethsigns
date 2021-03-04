@@ -1,8 +1,35 @@
-clean:
-	@ echo '<<<<<<<<<<cleaning>>>>>>>>>>>'
-	find . -type f -name '*.pyc' -delete
-	@ echo ''
-	find . -type f -name '*.log' -delete
+#@-- help command to show usage of make commands --@#
+help:
+	@echo "----------------------------------------------------------------------------"
+	@echo "-                     Available commands                                   -"
+	@echo "----------------------------------------------------------------------------"
+	@echo "---> make venv             - To create virtual environment"
+	@echo "---> make activate         - To activate virtual environment"
+	@echo "---> make install          - To install dependencies from requirements.txt"
+	@echo "---> make init-db          - To initialize the database"
+	@echo "---> make migrate          - To create a migration file for the changes in the models"
+	@echo "---> make update-db        - To update the database with the latest migration"
+	@echo "---> make downgrade-db     - To undo the latest migration in the database"
+	@echo "---> make init-day-signs   - To seed the database with day signs"
+	@echo "---> make init-month-signs - To seed the database with month signs"
+	@echo "---> make update           - To update the requirements file"
+	@echo "---> make test             - To run all tests and show coverage"
+	@echo "---> make lint             - To run the flake8 linter"
+	@echo "---> make run              - To start the server"
+	@echo "---> make init-app         - To run update-db, init-day-signs, and init-month-signs"
+	@echo " "
+	@echo "----------------------->>>>>>>>>>>>><<<<<<<<<<<<<<--------------------------"
+	@echo "-                     Available Docker commands                            -"
+	@echo "----------------------------------------------------------------------------"
+	@echo "---> make build         - To build the docker image"
+	@echo "---> make start         - To start the containers in the background"
+	@echo "---> make start_verbose - To start the containers verbosely"
+	@echo "---> make stop          - To stop the api containers"
+	@echo "---> make clean         - To delete the application image"
+	@echo "---> make help          - To show usage commands"
+	@echo "----------------------------------------------------------------------------"
+
+
 
 venv:
 	@ echo '<<<<<<<<<<Creating virtual environment>>>>>>>>>'
@@ -74,3 +101,36 @@ lint:
 	@ echo ''
 
 init-app:  update-db init-day-signs init-month-signs
+
+
+#@-- command to build the application--@#
+build:
+	@echo "<<<<<<<<<<Building application image>>>>>>>>>>>>>>"
+	docker-compose build
+
+#@-- command to start the container in the background --@#
+start:
+	@echo "<<<<<<<<<<Start up the api in the background after building>>>>>>>>>>>>>>"
+	@echo ""
+	docker-compose up -d
+
+#@-- command to start the application --@#
+start_verbose:
+	@echo "<<<<<<<<<<Start up the api containers after building>>>>>>>>>>>>>>"
+	@echo ""
+	docker-compose up
+
+#@-- command to stop the application --@#
+stop:
+	@echo "<<<<<<<<<<Stop running the api containers>>>>>>>>>>>>>>"
+	@echo ""
+	docker-compose down
+
+#@-- command to remove the images created --@#
+clean:
+	@echo "<<<<<<<<<< \033[31m  Remove application image>>>>>>>>>>>>>>"
+	@echo ""
+	bash cleanup.sh
+
+#@-- help should be run by default when no command is specified --@#
+default: help
