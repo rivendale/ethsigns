@@ -45,6 +45,11 @@ def init_year_sign():
         for i in YEAR_FIXTURES:
             if not Zodiacs.query.filter_by(name=i['name']).first():
                 i = {k: str(v) for k, v in i.items() if v != 'base_index'}
+<<<<<<< HEAD
+=======
+                import pdb
+                # pdb.set_trace()
+>>>>>>> chore (cd): configure continous deployment (#35)
                 sign = Zodiacs(i)
                 sign.save()
 
