@@ -7,9 +7,10 @@ services:
       dockerfile: docker/Dockerfile
     ports:
       - "5000:5000"
-    image: portfolio-app
+    image: ethsign-api
     volumes:
-      - .:/portfolio-app
+      - .:/ethsign-api
+      - static_volume:/ethsigns-app/app/static/
     entrypoint: ["/bin/bash", "-c", "/ethsigns-app/docker/start_app.sh"]
     stdin_open: true
     tty: true
@@ -20,3 +21,20 @@ services:
       - SECRET_KEY=${SECRET_KEY}
       - DEBUG=${DEBUG}
       - SQLALCHEMY_TRACK_MODIFICATIONS=${SQLALCHEMY_TRACK_MODIFICATIONS}
+  proxy:
+    image: ethsign-api-nginx
+    build:
+      context: .
+      dockerfile: nginx/nginx.Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - app
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - /etc/letsencrypt/:/etc/letsencrypt/
+      - static_volume:/ethsigns-api/static/
+    restart: always
+volumes:
+  static_volume:

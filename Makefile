@@ -79,6 +79,10 @@ init-month-signs:
 	@ echo '<<<<<<<<<<initializing month sign>>>>>>>>>'
 	python ethsigns.py database init_month_sign
 	@ echo ''
+init-year-signs:
+	@ echo '<<<<<<<<<<initializing year sign>>>>>>>>>'
+	python ethsigns.py database init_year_sign
+	@ echo ''
 
 update:
 	@ echo '<<<<<<<<<<updating requirements>>>>>>>>>'
@@ -100,7 +104,7 @@ lint:
 	flake8 .
 	@ echo ''
 
-init-app:  update-db init-day-signs init-month-signs
+init-app:  update-db init-day-signs init-month-signs init-year-signs
 
 
 #@-- command to build the application--@#

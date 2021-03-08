@@ -38,6 +38,18 @@ def init_day_sign():
 
 
 @db_manager.command
+def init_year_sign():
+    with app.app_context():
+        from app.api.fixtures import YEAR_FIXTURES
+        from app.api.models import Zodiacs
+        for i in YEAR_FIXTURES:
+            if not Zodiacs.query.filter_by(name=i['name']).first():
+                i = {k: str(v) for k, v in i.items() if v != 'base_index'}
+                sign = Zodiacs(i)
+                sign.save()
+
+
+@db_manager.command
 def init_month_sign():
     with app.app_context():
         from app.api.fixtures import MONTH_FIXTURE

@@ -7,6 +7,7 @@ from flask_migrate import Migrate
 from flask_restplus import apidoc
 from flask_sqlalchemy import SQLAlchemy
 from app.api import signs_ns
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app.api import api_blueprint
 from app.api.resources import api
@@ -25,6 +26,7 @@ api.add_namespace(signs_ns, path=signs_path)
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 app.config.from_object(AppConfig)
+app.wsgi_app = ProxyFix(app.wsgi_app)
 Bootstrap(app)
 db = SQLAlchemy(app)
 api.init_app(app)
