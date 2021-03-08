@@ -50,3 +50,30 @@ jobs:
       run: |
         source ~/pip-env/bin/activate
         coverage run -m pytest
+
+  # deploy:
+  #   name: Deploy App
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/main'
+  #   steps:
+  #     - uses: actions/checkout@v1
+  #     - name: Executing remote  command
+  #       uses: appleboy/ssh-action@master
+  #       with:
+  #         host: ${{ secrets.HOST }}
+  #         username: ${{ secrets.USERNAME }}
+  #         password: ${{ secrets.PASSWORD }}
+  #         port: ${{ secrets.PORT }}
+  #         script: |
+  #           cd ~/ethsigns
+  #           git fetch
+  #           git reset --hard origin/main
+  #           export FLASK_APP=${{ secrets.FLASK_APP}}
+  #           export DATABASE_URI=${{ secrets.DATABASE_URI}}
+  #           export FLASK_ENV=${{ secrets.FLASK_ENV}}
+  #           export SECRET_KEY='${{ secrets.SECRET_KEY}}'
+  #           export DEBUG=False
+  #           export SQLALCHEMY_TRACK_MODIFICATIONS='${{ secrets.SQLALCHEMY_TRACK_MODIFICATIONS}}'
+  #           docker-compose build
+  #           docker-compose up -d
+  #   needs: [run-tests]
