@@ -37,7 +37,7 @@ importlib-resources==4.1.1
 iniconfig==1.1.1
 ipfshttpclient==0.7.0a1
 itsdangerous==1.1.0
-Jinja2==2.11.2
+Jinja2==2.11.3
 jsonschema==3.2.0
 lru-dict==1.1.6
 Mako==1.1.4
