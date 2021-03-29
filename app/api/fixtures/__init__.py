@@ -1,6 +1,6 @@
 MONTH_FIXTURE = [
     {"month": 1, "animal": "Ox"},
-    {"month": 2, "animal": "Sheep (Goat)"},
+    {"month": 2, "animal": "Goat (Goat)"},
     {"month": 3, "animal": "Tiger"},
     {"month": 4, "animal": "Monkey"},
     {"month": 5, "animal": "Rabbit"},
@@ -14,7 +14,7 @@ MONTH_FIXTURE = [
 ]
 
 DAY_FIXTURES = [
-    {"day": "Monday", "animal": "Sheep"},
+    {"day": "Monday", "animal": "Goat"},
     {"day": "Tuesday", "animal": "Dragon"},
     {"day": "Wednesday", "animal": "Horse"},
     {"day": "Thursday", "animal": "Rat, Pig"},
@@ -30,7 +30,7 @@ YEAR_FIXTURES = [
         "force": "Yang",
         "element": "Water",
         "best_compatibility": ["Dragon", "Monkey"],
-        "worst_compatibility": ["Sheep", "Horse", "Rabbit", "Rooster"],
+        "worst_compatibility": ["Goat", "Horse", "Rabbit", "Rooster"],
         "image_url":"https://res.cloudinary.com/dsw3onksq/image/upload/v1615559952/rat_rlchaa.png",
         "positive_traits": ["Affectionate", "Calm", "Charming", "Compassionate", "Dynamic"],
         "negative_traits": ["Argumentative", "Calculating", "Defensive", "Greedy", "Gossipy"],
@@ -48,7 +48,7 @@ YEAR_FIXTURES = [
         "element": "Water",
         "image_url": "https://res.cloudinary.com/dsw3onksq/image/upload/v1615559951/ox_a1bttx.png",
         "best_compatibility": ["Rat", "Snake", "Rooster"],
-        "worst_compatibility": ["Dragon", "Horse", "Sheep", "Dog"],
+        "worst_compatibility": ["Dragon", "Horse", "Goat", "Dog"],
         "positive_traits": ["Authoritative", "Capable", "Careful", "Clear-thinking"],
         "negative_traits": ["Biased", "Chauvinistic", "Cold", "Complacent"],
         "report": [
@@ -78,7 +78,7 @@ YEAR_FIXTURES = [
         "name": "Rabbit",
         "force": "Yin",
         "element": "Wood",
-        "best_compatibility": ["Sheep", "Pig"],
+        "best_compatibility": ["Goat", "Pig"],
         "worst_compatibility": ["Rat", "Dragon", "Ox", "Rooster"],
         "image_url":"https://res.cloudinary.com/dsw3onksq/image/upload/v1615559952/rabbit_sjt1gi.png",
         "positive_traits": ["Affectionate", "Ambitious", "Artistic", "Considerate", "Cultured"],
@@ -149,8 +149,8 @@ YEAR_FIXTURES = [
         "positive_traits": ["Adaptable", "Appealing", "Candid", "Cheerful", "Compliant"],
         "negative_traits": ["Anxious", "Careless", "Disorganized", "Illogical", "Impractical"],
         "report": [
-            "Sheep are gentle and reflective, constructively applying their intelligence to the prevention of harm. You cannot live without beauty, and you strive for tranquility. Peace-loving, ardent, and easygoing, you can get along with nearly everyone. Sheep are the most sensitive of all the signs. This gentle soul is compassionate and loving, but tends toward moodiness and finds it difficult to work under pressure. You flourish in an environment where they can work at their own pace, in spaces that are aesthetically pleasing, and surrounded by approval, love, and support. You are sometimes potentially vulnerable and needy.",
-            "You are really more of an acquired taste; you don’t want all the attention anyway, preferring to enjoy your peaceful, quiet moments. Luckily, Sheep tend to attract whatever they need in life. You can vary your attention, starting one project, and then moving off to another, quickly and on a whim. You have a reputation for numerous talents. While your versatility is an artistic blessing, if not channeled constructively, it can cause you to be scattered. You are extremely sensitive and compassionate, which explains why you are easily moved by any story you hear and will sob at a Disney movie. You need to feel admired and protected, and have a constant craving for love. You must learn to relax a little bit! You seem to worry too much, and it is truly unnecessary to have all this anxiety over inconsequential things.",
+            "Goat are gentle and reflective, constructively applying their intelligence to the prevention of harm. You cannot live without beauty, and you strive for tranquility. Peace-loving, ardent, and easygoing, you can get along with nearly everyone. Goat are the most sensitive of all the signs. This gentle soul is compassionate and loving, but tends toward moodiness and finds it difficult to work under pressure. You flourish in an environment where they can work at their own pace, in spaces that are aesthetically pleasing, and surrounded by approval, love, and support. You are sometimes potentially vulnerable and needy.",
+            "You are really more of an acquired taste; you don’t want all the attention anyway, preferring to enjoy your peaceful, quiet moments. Luckily, Goat tend to attract whatever they need in life. You can vary your attention, starting one project, and then moving off to another, quickly and on a whim. You have a reputation for numerous talents. While your versatility is an artistic blessing, if not channeled constructively, it can cause you to be scattered. You are extremely sensitive and compassionate, which explains why you are easily moved by any story you hear and will sob at a Disney movie. You need to feel admired and protected, and have a constant craving for love. You must learn to relax a little bit! You seem to worry too much, and it is truly unnecessary to have all this anxiety over inconsequential things.",
             "You have amazing unique qualities like peacefulness and adaptability combined with easy going character. Happiness will come to you when you are able to see through the ironies and contradictions of ordinary life and feel more confident in your own middle-of-the-road path. Activities such as daily walking, gardening, dancing, and swimming are ideal to promote good health. Your surroundings are very important to you. Your home will be filled with stylish furniture and original paintings and sculptures due to your extraordinary taste in art and culture. You are happiest and most fulfilled when your talents are appreciated. Beautiful environments uplift you, but ugliness has a depressing effect. A spirit of “live and let live” will always be more important than the pursuit of power."
         ]
     },
@@ -192,7 +192,7 @@ YEAR_FIXTURES = [
         "force": "Yin",
         "element": "Metal",
         "best_compatibility": ["Tiger", "Horse"],
-        "worst_compatibility": ["Ox", "Dragon", "Sheep", "Rooster"],
+        "worst_compatibility": ["Ox", "Dragon", "Goat", "Rooster"],
         "image_url": "https://res.cloudinary.com/dsw3onksq/image/upload/v1615559951/dog_jeb6ft.png",
         "positive_traits": ["Brave", "Devoted", "Discreet", "Enthusiastic", "Faithful"],
         "negative_traits": ["Accusing", "Anxious", "Bad-tempered", "Cold", "Disagreeable"],
@@ -207,7 +207,7 @@ YEAR_FIXTURES = [
         "name": "Pig",
         "force": "Yin",
         "element": "Water",
-        "best_compatibility": ["Sheep", "Rabbit"],
+        "best_compatibility": ["Goat", "Rabbit"],
         "worst_compatibility": ["Snake", "Monkey", "Pig"],
         "image_url": "https://res.cloudinary.com/dsw3onksq/image/upload/v1615559952/pig_cg6lje.png",
         "positive_traits": ["Affectionate", "Amusing", "Caring", "Charitable", "Cheerful"],

@@ -27,6 +27,7 @@ class FormatNested(fields.Raw):
 year_signs_schema = {
     'id': fields.Integer(description='The Sign identifier'),
     'name': fields.String(description='Sign name'),
+    'description': fields.String(description='Sign description'),
     'element': fields.String(description='Sign element'),
     'force': fields.String(description='Sign force'),
     'image_url': fields.String(description='Sign Image Url'),

@@ -54,7 +54,7 @@ def new_day_sign_two(app):
 
     return DaySign({
         "day": "Monday",
-        "animal": "Sheep"
+        "animal": "Goat"
     })
 
 

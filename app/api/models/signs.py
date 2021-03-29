@@ -17,6 +17,7 @@ class Zodiacs(db.Model, ModelOperations):
     best_compatibility = db.Column(db.String(300), index=True)
     worst_compatibility = db.Column(db.String(00), index=True)
     report = db.Column(db.String(4000), index=True)
+    description = db.Column(db.String(250))
 
     def __init__(self, sign):
         """Constructor object
@@ -34,6 +35,7 @@ class Zodiacs(db.Model, ModelOperations):
         self.best_compatibility = sign.get('best_compatibility')
         self.worst_compatibility = sign.get('worst_compatibility')
         self.report = sign.get('report')
+        self.description = sign.get('description')
 
     def __repr__(self):
         return '<Zodiac - {}>'.format(self.name)
