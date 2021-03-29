@@ -2,6 +2,7 @@ VALID_YEAR_SIGN = {
     "name": "Tiger",
     "force": "Yang",
     "element": "Wood",
+    "description": "Test",
     "image_url": "http://image.png",
     "best_compatibility": ["Horse", "Dog"],
     "worst_compatibility": ["Snake", "Monkey"],

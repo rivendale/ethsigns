@@ -4,7 +4,7 @@ ZODIAC_ANIMALS = {'Rat': 0, 'Ox': 1, 'Tiger': 2, 'Rabbit': 3, 'Dragon': 4,
 ZODIAC_FORCES = ["Yang", "Yin"]
 ZODIAC_ELEMENTS = ["Water", "Wood", "Fire", "Metal"]
 DAY_ZODIAC_ANIMALS = [
-    {"day": "Monday", "animal": "Sheep"},
+    {"day": "Monday", "animal": "Goat"},
     {"day": "Tuesday", "animal": "Dragon"},
     {"day": "Wednesday", "animal": "Horse"},
     {"day": "Thursday", "animal": "Rat, Pig"},

@@ -177,7 +177,11 @@ def sign_validation(create=True):
     parser.add_argument('image_url',
                         type=validate_url,
                         required=create, help='Image url:',
-                        case_sensitive=False)
+                        case_sensitive=False),
+    parser.add_argument('description',
+                        type=str,
+                        required=create, help='Description:',
+                        case_sensitive=False),
 
     return parser
 
