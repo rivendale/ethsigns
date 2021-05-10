@@ -237,3 +237,20 @@ def month_sign_update_validation(create=True):
     parser.remove_argument("month")
 
     return parser
+
+
+def user_validation(create=True):
+    """
+    Function to add user validation to the parser
+    Args:
+        create (Bool): 'required' option
+    Return:
+        parser (obj): request parser
+    """
+
+    parser = reqparse.RequestParser(trim=True, bundle_errors=True)
+    parser.add_argument('address',
+                        type=str,
+                        required=create,
+                        help='Address:', location='json',)
+    return parser
