@@ -10,14 +10,14 @@ class Zodiacs(db.Model, ModelOperations):
     name = db.Column(db.String(60), index=True, nullable=False)
     element = db.Column(db.String(60), index=True, nullable=False)
     force = db.Column(db.String(60), index=True, nullable=False)
-    image_url = db.Column(db.String(250))
+    image_url = db.Column(db.String(1000))
     base_index = db.Column(db.Integer, index=True, unique=True)
     positive_traits = db.Column(db.String(300), index=True)
     negative_traits = db.Column(db.String(300), index=True)
     best_compatibility = db.Column(db.String(300), index=True)
-    worst_compatibility = db.Column(db.String(00), index=True)
+    worst_compatibility = db.Column(db.String(300), index=True)
     report = db.Column(db.String(4000), index=True)
-    description = db.Column(db.String(250))
+    description = db.Column(db.String(1000))
 
     def __init__(self, sign):
         """Constructor object

@@ -1,10 +1,10 @@
 #!/bin/bash
 
+sleep 10
 echo "<<<<<<<< Database Setup and Migrations Starts >>>>>>>>>"
 # Run database migrations
 flask db upgrade head &&
 
-sleep 2
 echo "<<<<<<< Database Setup and Migrations Complete >>>>>>>>>>"
 echo " "
 
