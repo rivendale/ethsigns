@@ -8,7 +8,7 @@ help:
 	@echo "---> make install          - To install dependencies from requirements.txt"
 	@echo "---> make init-db          - To initialize the database"
 	@echo "---> make migrate          - To create a migration file for the changes in the models"
-	@echo "---> make update-db        - To update the database with the latest migration"
+	@echo "---> make upgrade-db        - To update the database with the latest migration"
 	@echo "---> make downgrade-db     - To undo the latest migration in the database"
 	@echo "---> make init-day-signs   - To seed the database with day signs"
 	@echo "---> make init-month-signs - To seed the database with month signs"
@@ -16,7 +16,7 @@ help:
 	@echo "---> make test             - To run all tests and show coverage"
 	@echo "---> make lint             - To run the flake8 linter"
 	@echo "---> make run              - To start the server"
-	@echo "---> make init-app         - To run update-db, init-day-signs, and init-month-signs"
+	@echo "---> make init-app         - To run upgrade-db, init-day-signs, and init-month-signs"
 	@echo " "
 	@echo "----------------------->>>>>>>>>>>>><<<<<<<<<<<<<<--------------------------"
 	@echo "-                     Available Docker commands                            -"
@@ -60,7 +60,7 @@ migrate:
 	flask db migrate --message="$(message)"
 	@ echo ''
 
-update-db:
+upgrade-db:
 	@ echo '<<<<<<<<<<updating database>>>>>>>>>'
 	flask db upgrade head
 	@ echo ''
@@ -104,7 +104,7 @@ lint:
 	flake8 .
 	@ echo ''
 
-init-app:  update-db init-day-signs init-month-signs init-year-signs
+init-app:  upgrade-db init-day-signs init-month-signs init-year-signs
 
 
 #@-- command to build the application--@#

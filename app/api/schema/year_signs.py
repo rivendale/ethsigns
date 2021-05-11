@@ -53,3 +53,10 @@ signs_schema.update({
                                 attribute="day", description="Sign's day details"),
 })
 signs_schema = signs_ns.model('Zodiacs', signs_schema)
+
+minimal_year_signs = {
+    'id': fields.Integer(description='The Sign identifier'),
+    'name': fields.String(description='Sign name'),
+}
+
+minimal_year_signs = signs_ns.model('Zodiacs', minimal_year_signs)

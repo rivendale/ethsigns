@@ -1,1 +1,2 @@
 from .signs import CreateListZodiacResource, GetPatchDeleteZodiacResource
+from .users import CreateRetrieveUserResource, AddRemoveAssetToUsersResource

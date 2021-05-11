@@ -2,7 +2,6 @@
 
 # [Ethereum Signs](https://ethsigns.com)
 
-
 Ethereum - Chinese Zodiac - favorite projects - [Medium journal log](https://resourcehub.medium.com/ethereum-turn-based-strategy-game-and-nfts-working-draft-80f0f247b64e)
 </br>
 Chinese Zodiacs that can be minted (NFT) based on a user's birth date ([example](https://ethsigns.com/index/earth/pig/)).
@@ -14,14 +13,11 @@ This would just be for fun to compare personality traits ([Earth Pig](https://ww
 This could then could morph into something more later, such as a way to import for games that would tilt towards which Zodiacs get along
 ([compatibility](https://en.wikipedia.org/wiki/Chinese_zodiac)) for team formation (and/or different starting skills based on personality traits).
 
-
 Reference Links:
 
 [thechinesezodiac.org](https://www.thechinesezodiac.org/)
 
 [Chinese Zodiacs (Wikipedia)](https://en.wikipedia.org/wiki/Chinese_zodiac)
-
-
 
 # SETUP NOTES
 
@@ -93,7 +89,7 @@ Reference Links:
 
 **update database**
 
-`make update-db`
+`make upgrade-db`
 
 ---
 

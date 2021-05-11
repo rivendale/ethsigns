@@ -21,3 +21,17 @@ class ModelOperations(object):
         for field, value in kwargs.items():
             setattr(self, field, value)
         db.session.commit()
+
+    def add_sign(self, sign):
+        """
+        update entries
+        """
+        self.signs.append(sign)
+        db.session.commit()
+
+    def remove_sign(self, sign):
+        """
+        update entries
+        """
+        self.signs.remove(sign)
+        db.session.commit()
