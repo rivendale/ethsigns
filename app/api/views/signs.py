@@ -3,14 +3,15 @@ from app import api
 from app.api import signs_ns
 from app.api.helpers.constants import ZODIAC_ANIMALS
 from app.api.helpers.signs import (check_existing_month_signs,
-                                   check_existing_year_signs, date_validator,
+                                   check_existing_year_signs, date_validator, dict_hash,
                                    return_not_found)
-from app.api.models import MonthSign, Zodiacs, DaySign
-from app.api.schema import (month_signs_schema, day_signs_schema,
-                            signs_schema, year_signs_schema)
-from app.api.validators.validators import (month_sign_validation,
+from app.api.models import DaySign, MonthSign, Zodiacs
+from app.api.schema import (day_signs_schema, month_signs_schema, signs_schema,
+                            year_signs_schema)
+from app.api.validators.validators import (day_sign_validation,
                                            month_sign_update_validation,
-                                           sign_validation, day_sign_validation)
+                                           month_sign_validation,
+                                           sign_validation)
 from flask_restplus import Resource
 
 
@@ -145,8 +146,10 @@ class GetUserZodiacResource(Resource):
         sign = Zodiacs.query.filter_by(
             base_index=base_index).first()
         day = DaySign.query.filter_by(day=day).first()
+        hash_data = dict_hash(data)
         setattr(sign, "month", month)
         setattr(sign, "day", day)
+        setattr(sign, "hash", hash_data)
         return sign
 
 

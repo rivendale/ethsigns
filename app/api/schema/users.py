@@ -1,10 +1,17 @@
 from flask_restplus import fields
 from flask_restplus import marshal
 from app.api import signs_ns
-from .year_signs import minimal_year_signs
 
 
-class Signs(fields.Raw):
+sign_hashes_schema = {
+    'id': fields.Integer(description='The Sign identifier'),
+    'signhash': fields.String(description='Sign Hashes'),
+}
+
+sign_hashes_schema = signs_ns.model('SignHash', sign_hashes_schema)
+
+
+class SignHashes(fields.Raw):
     """
     sign Formatter
     """
@@ -17,16 +24,16 @@ class Signs(fields.Raw):
         Returns:
             (dict): formatted signs
         """
-        signs = [marshal(sign, minimal_year_signs)
-                 for sign in value]
+        sign_hashes = [marshal(hash, sign_hashes_schema)
+                       for hash in value]
 
-        return signs
+        return sign_hashes
 
 
 user_schema = {
     'id': fields.Integer(description='The User identifier'),
     'address': fields.String(description='User Etherium address'),
-    "signs": Signs(attribute='signs')
+    "sign_hashes": SignHashes(attribute='sign_hashes')
 }
 
 user_schema = signs_ns.model('User', user_schema)
