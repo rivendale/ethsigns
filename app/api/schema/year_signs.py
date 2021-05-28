@@ -47,16 +47,10 @@ year_signs_schema = signs_ns.model('Zodiacs', year_signs_schema)
 
 
 signs_schema.update({
+    'hash': fields.String(description='Sign Hash'),
     'month_animal': fields.Nested(month_signs_schema, skip_none=True,
                                   attribute="month", description="Sign's month details"),
     'day_animal': fields.Nested(day_signs_schema, skip_none=True,
                                 attribute="day", description="Sign's day details"),
 })
 signs_schema = signs_ns.model('Zodiacs', signs_schema)
-
-minimal_year_signs = {
-    'id': fields.Integer(description='The Sign identifier'),
-    'name': fields.String(description='Sign name'),
-}
-
-minimal_year_signs = signs_ns.model('Zodiacs', minimal_year_signs)

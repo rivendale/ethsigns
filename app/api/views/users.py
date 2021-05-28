@@ -2,9 +2,9 @@
 from app import api
 from app.api import signs_ns
 from app.api.helpers.signs import (
-    check_existing_user, return_not_found,
+    check_existing_user,
     user_address_validator, validate_action)
-from app.api.models import User, Zodiacs
+from app.api.models import User, SignHash
 from app.api.schema import (user_schema)
 from flask_restplus import Resource
 
@@ -38,7 +38,7 @@ class CreateRetrieveUserResource(Resource):
         return user, 201
 
 
-@api.route('/users/<int:sign_id>/')
+@api.route('/users/<sign_hash>/')
 class AddRemoveAssetToUsersResource(Resource):
     """
     Resource to handle:
@@ -61,7 +61,7 @@ class AddRemoveAssetToUsersResource(Resource):
         Allocate zodiac sign to user
 
         Args:
-            sign_id (int): zodiac sign ID
+            sign_hash (str): zodiac sign ID
         Returns:
             user (obj): user data
         """
@@ -69,22 +69,22 @@ class AddRemoveAssetToUsersResource(Resource):
 
         user = data.get("user")
         action = data.get("action")
-        sign_id = kwargs.get("sign_id")
-        sign = Zodiacs.query.filter_by(id=sign_id).first()
+        sign_hash = kwargs.get("sign_hash")
+        sign = SignHash.query.filter_by(signhash=sign_hash).first()
         if not sign:
-            return_not_found(signs_ns, 'sign')
+            sign = SignHash({"sign_hash": sign_hash}).save()
         if action == "add":
             user.add_sign(sign)
 
         if action == "remove":
-            if sign not in user.signs:
+            if sign not in user.sign_hashes:
                 signs_ns.abort(
                     400, errors={"error": "User does not have the provided sign"})
             user.remove_sign(sign)
         return user, 200
 
 
-@api.route('/users/verify/<int:sign_id>/<address>/')
+@api.route('/users/verify/<sign_hash>/<address>/')
 class VerifyAssetResource(Resource):
     """
     Resource to handle:
@@ -92,21 +92,22 @@ class VerifyAssetResource(Resource):
     """
 
     @signs_ns.doc(description="Verify Sign ownership")
-    def get(self, sign_id, address, **kwargs):
+    def get(self, sign_hash, address, **kwargs):
         """
         Verify Sign ownership
 
         Args:
-            sign_id (int): zodiac sign ID
+            sign_hash (int): zodiac sign hash
         Returns:
             user (obj): user data
         """
         valid = False
         user = check_existing_user({"address": address})
-        sign = Zodiacs.query.filter_by(id=sign_id).first()
-        if not sign:
-            return_not_found(signs_ns, 'sign')
+        sign = SignHash.query.filter_by(signhash=sign_hash).first()
 
-        if sign in user.signs:
+        # if not sign:
+        #     return_not_found(signs_ns, 'sign hash')
+
+        if sign in user.sign_hashes:
             valid = True
         return {"valid": valid}, 200

@@ -22,16 +22,16 @@ class ModelOperations(object):
             setattr(self, field, value)
         db.session.commit()
 
-    def add_sign(self, sign):
+    def add_sign(self, sign_hash):
         """
         update entries
         """
-        self.signs.append(sign)
+        self.sign_hashes.append(sign_hash)
         db.session.commit()
 
-    def remove_sign(self, sign):
+    def remove_sign(self, sign_hash):
         """
         update entries
         """
-        self.signs.remove(sign)
+        self.sign_hashes.remove(sign_hash)
         db.session.commit()

@@ -137,3 +137,5 @@ dmypy.json
 # Json files
 signs.json
 *rd.DS_Store
+*.rdb
+.DS_Store
