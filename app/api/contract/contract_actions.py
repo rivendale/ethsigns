@@ -5,10 +5,6 @@ from . import (contract_address, contract_instance, private_key,
                public_address, web3)
 from .helpers import create_nft, format_sign, make_gateway_url
 
-import pdb
-
-# pdb.set_trace()
-
 
 def transfer_token(token_ids, to_address, from_address):
     transaction_hashes = []
@@ -33,17 +29,11 @@ def transfer_token(token_ids, to_address, from_address):
                 })
                 signed_tx = web3.eth.account.signTransaction(tx, private_key)
                 resp = web3.eth.sendRawTransaction(signed_tx.rawTransaction)
-                pdb.set_trace()
 
             except Exception as e:
                 error_messages.update({id_: e})
-    pdb.set_trace()
 
     return transaction_hashes, error_messages
-
-
-# transfer_token([2], "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-#                "0x099446CAd9294C5537D8e2996f0d440C0cb381B3")
 
 
 def withdraw_to_wallet():
@@ -68,9 +58,6 @@ def withdraw_to_wallet():
         print(e)
 
     return status
-
-
-# withdraw_to_wallet()
 
 
 def get_wallet_account_balance():
