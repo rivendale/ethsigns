@@ -35,3 +35,10 @@ class ModelOperations(object):
         """
         self.sign_hashes.remove(sign_hash)
         db.session.commit()
+
+    def add_mint(self, mint_sign):
+        """
+        update entries
+        """
+        self.mint_sign.append(mint_sign)
+        db.session.commit()

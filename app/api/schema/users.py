@@ -1,6 +1,7 @@
 from flask_restplus import fields
 from flask_restplus import marshal
 from app.api import signs_ns
+import pdb
 
 
 sign_hashes_schema = {
@@ -37,3 +38,15 @@ user_schema = {
 }
 
 user_schema = signs_ns.model('User', user_schema)
+
+
+mint_sign_schema = {
+    'id': fields.Integer(description='The User identifier'),
+    'dob': fields.Date(description='User DOB'),
+    'created_at': fields.DateTime(description="Instance created at"),
+    'user_address': fields.String(description='User Etherium address'),
+    'transaction_hash': fields.String(description='Transaction Hash'),
+    'minted': fields.Boolean(description='Sign Minted status'),
+}
+
+mint_sign_schema = signs_ns.model('MintSign', mint_sign_schema)

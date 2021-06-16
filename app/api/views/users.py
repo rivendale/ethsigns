@@ -1,12 +1,15 @@
 """Module for user resource"""
+from app.api.contract.contract_actions import get_account_tokens
 from app import api
 from app.api import signs_ns
-from app.api.helpers.signs import (
-    check_existing_user,
-    user_address_validator, validate_action)
-from app.api.models import User, SignHash
-from app.api.schema import (user_schema)
+from app.api.helpers.signs import (check_existing_user, date_validator,
+                                   user_address_validator, validate_action)
+from app.api.models import SignHash, User, MintSign
+from app.api.schema import mint_sign_schema, user_schema
 from flask_restplus import Resource
+
+from ..validators.validators import mint_token_validator
+from datetime import datetime
 
 
 @api.route('/users/')
@@ -111,3 +114,55 @@ class VerifyAssetResource(Resource):
         if sign in user.sign_hashes:
             valid = True
         return {"valid": valid}, 200
+
+
+@api.route('/users/tokens/<address>/')
+class UserTokensResource(Resource):
+    """
+    Resource to handle:
+        - get user tokens
+    """
+
+    @signs_ns.doc(description="Get User tokens")
+    def get(self, address, **kwargs):
+        """
+        Get User tokens
+
+        Args:
+            address (int): user address
+        Returns:
+            tokens (str): user tokens
+        """
+        check_existing_user({"address": address})
+        import pdb; pdb.set_trace()
+        tokens = get_account_tokens(address)
+
+        return tokens, 200
+
+
+@api.route('/users/mint/')
+class MintTokenZodiacResource(Resource):
+    """
+    Class to handle:
+        - retrieving a sign based on certain query parameters
+    """
+
+    @signs_ns.marshal_with(mint_sign_schema, envelope='sign')
+    @signs_ns.expect(mint_token_validator(create=True))
+    def post(self, *args, **kwargs):
+        """
+        Function to retrieve a sign
+        Args:
+            sign_id (int): sign ID
+        Returns:
+            sign (obj): sign data
+        """
+        mint_data = mint_token_validator().parse_args(strict=True)
+        mint_data['created_at'] = datetime.now()
+
+        mint_sign = MintSign(data=mint_data)
+        # mint_sign = MintSign.query.filter_by(id=7).first()
+        mint_sign.save()
+        user = check_existing_user({'address': mint_data['user_address']})
+        user.add_mint(mint_sign)
+        return mint_sign

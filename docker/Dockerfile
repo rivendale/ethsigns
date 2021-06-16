@@ -1,4 +1,4 @@
-FROM python:3.7.7-slim
+FROM python:3.7.9-slim
 
 
 ENV MICRO_SERVICE=/ethsigns-app
@@ -24,7 +24,7 @@ RUN groupadd -g ${GROUP_ID} ${APP_USER} && useradd -u ${USER_ID} -g ${APP_USER} 
 
 # Install ca certificates
 RUN apt-get update \
-    && apt-get install python3-dev gcc ca-certificates -y --no-install-recommends \
+    && apt-get install python3-dev gcc ca-certificates libpq-dev gcc -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

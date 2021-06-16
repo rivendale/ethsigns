@@ -1,6 +1,6 @@
 from ..helpers.constants import ZODIAC_ANIMALS, ZODIAC_FORCES, ZODIAC_ELEMENTS
 import re
-from flask_restplus import reqparse
+from flask_restplus import reqparse, inputs
 
 
 STRING_REGEX = re.compile(r"^[a-zA-Z0-9]+(([' .-][a-zA-Z0-9])?[a-zA-Z0-9]*)*$")
@@ -253,4 +253,30 @@ def user_validation(create=True):
                         type=str,
                         required=create,
                         help='Address:', location='json',)
+    return parser
+
+
+def mint_token_validator(create=True):
+    """
+    Function to add token validation to the parser
+    Args:
+        create (Bool): 'required' option
+    Return:
+        parser (obj): request parser
+    """
+
+    parser = reqparse.RequestParser(trim=True, bundle_errors=True)
+    parser.add_argument('dob',
+                        type=inputs.date,
+                        required=create,
+                        help='DOB:', location='json',)
+    parser.add_argument('user_address',
+                        type=str,
+                        required=create,
+                        help='Address:', location='json',)
+    parser.add_argument('transaction_hash',
+                        type=str,
+                        required=create,
+                        help='Transaction Hash:', location='json',)
+
     return parser
