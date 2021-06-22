@@ -4,6 +4,10 @@ import sys
 from os import getenv, path
 
 from dotenv import load_dotenv
+from web3 import Web3, middleware
+# from web3.gas_strategies.time_based import fast_gas_price_strategy
+# from web3.gas_strategies.rpc import rpc_gas_price_strategy
+
 
 basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, '.env'))
@@ -21,6 +25,21 @@ class Config(object):
     API_BASE_URL_V1 = getenv('API_BASE_URL_V1', "")
     ADMINS = getenv('ADMINS', [])
     SWAGGER_UI_DOC_EXPANSION = 'list'
+    RPC_URL = getenv('RPC_URL', "")
+    CONTRACT_ADDRESS = getenv('CONTRACT_ADDRESS', "")
+    PRIVATE_KEY = getenv('PRIVATE_KEY', "")
+    IPFS_GATEWAY_URL = getenv('IPFS_GATEWAY_URL', "")
+    IPFS_API_KEY = getenv('IPFS_API_KEY', "")
+    IPFS_URL = getenv('IPFS_URL', "")
+    REDIS_URL = getenv('REDIS_URL', 'redis://localhost:6379/0')
+    worker_pool_restarts = True
+    CELERY_ENABLE_UTC = False
+    USE_TZ = True
+    CELERY_BROKER_URL = getenv(
+        'CELERY_BROKER_URL', 'redis://localhost:6379/0')
+    result_backend = getenv(
+        'CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
+    web3 = None
 
 
 class ProductionConfig(Config):
@@ -29,6 +48,11 @@ class ProductionConfig(Config):
 
 class DevelopmentConfig(Config):
     """App development configuration."""
+
+    if 'pytest' not in sys.modules:
+        web3 = Web3(Web3.HTTPProvider(Config.RPC_URL))
+
+        web3.middleware_onion.inject(middleware.geth_poa_middleware,  layer=0)
 
     SQLALCHEMY_DATABASE_URI = getenv(
         'DATABASE_URL', 'sqlite:///' + path.join(basedir, 'ethsigns.db'))

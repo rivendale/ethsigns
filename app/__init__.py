@@ -1,3 +1,4 @@
+from celery import Celery
 from config import AppConfig
 from flask import Flask
 from flask_bootstrap import Bootstrap
@@ -6,10 +7,10 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_restplus import apidoc
 from flask_sqlalchemy import SQLAlchemy
-from app.api import signs_ns
 from werkzeug.middleware.proxy_fix import ProxyFix
+from flask_caching import Cache
 
-from app.api import api_blueprint
+from app.api import api_blueprint, signs_ns
 from app.api.resources import api
 
 authorizations = {'Bearer Auth': {
@@ -23,9 +24,19 @@ signs_path = "signs/"
 api.add_namespace(signs_ns, path=signs_path)
 
 
+celery_app = Celery(__name__, broker=AppConfig.REDIS_URL)
+
+cache = Cache(config={
+    'CACHE_TYPE': 'redis',
+    'CACHE_REDIS_URL': AppConfig.REDIS_URL
+})
+
+
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 app.config.from_object(AppConfig)
+celery_app.conf.update(app.config)
+cache.init_app(app)
 app.wsgi_app = ProxyFix(app.wsgi_app)
 Bootstrap(app)
 db = SQLAlchemy(app)
@@ -45,3 +56,4 @@ app.register_blueprint(api_blueprint)
 
 from app import routes
 from app.api import views
+from app.api.contract import contract_actions

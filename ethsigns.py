@@ -1,6 +1,8 @@
+from app.api.helpers.celery import celery_task_state
 from flask_script import Manager, Shell
+from flask import jsonify
 
-from app import app, db
+from app import app, db, celery_app
 from app.models import User
 
 manager = Manager(app)
@@ -61,6 +63,66 @@ def init_month_sign():
 
 
 manager.add_command("database", db_manager)
+
+
+@app.route('/celery/health')
+def celery_stats():
+    """Checks tasks queued by celery.
+    if celery is up the response should have `sample_scheduler` task
+    """
+
+    msg = None
+
+    ins = celery_app.control.inspect()
+
+    try:
+        tasks = ins.registered_tasks()
+        msg = {"tasks": tasks, "status": "Celery up"}
+    except ConnectionError:
+        msg = {"status": "Redis server down"}
+    except Exception:
+        msg = {"status": "Celery down"}
+
+    return jsonify(dict(message=msg)), 200
+
+
+@app.route('/celery-beat/health')
+def celery_beat_stats():
+    """Checks tasks scheduled by celery-beat."""
+
+    import shelve
+
+    down_tasks = {}
+    ok_tasks = {}
+
+    file_data = shelve.open(
+        'celerybeat-schedule'
+    )
+    # Name of the file used by PersistentScheduler to store the
+    # last run times of periodic tasks.
+
+    entries = file_data.get('entries')
+
+    if not entries:
+        return jsonify(dict(error="celery-beat service not available")), 503
+
+    for task_name, task in entries.items():
+
+        try:
+            celery_task_state(
+                task, task_name, ok_tasks, down_tasks, is_cron_task=False)
+
+        except AttributeError:
+
+            celery_task_state(task, task_name, ok_tasks, down_tasks)
+
+    if down_tasks:
+        return jsonify(dict(message={
+            'Down tasks': down_tasks,
+        })), 503
+
+    return jsonify(dict(message={'Okay tasks': ok_tasks})), 200
+
 
 if __name__ == "__main__":
     manager.run()

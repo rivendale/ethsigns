@@ -23,7 +23,7 @@ help:
 	@echo "----------------------------------------------------------------------------"
 	@echo "---> make build         - To build the docker image"
 	@echo "---> make start         - To start the containers in the background"
-	@echo "---> make start_verbose - To start the containers verbosely"
+	@echo "---> make start-verbose - To start the containers verbosely"
 	@echo "---> make stop          - To stop the api containers"
 	@echo "---> make clean         - To delete the application image"
 	@echo "---> make help          - To show usage commands"
@@ -99,6 +99,16 @@ run:
 	python ethsigns.py runserver
 	@ echo ''
 
+celery-worker:
+	@ echo '<<<<<<<<<<starting celery beat>>>>>>>>>'
+	celery -A celery_worker.celery_app worker --loglevel=info
+	@ echo ''
+
+celery-beat:
+	@ echo '<<<<<<<<<<starting celery beat>>>>>>>>>'
+	celery -A celery_conf.celery_periodic_scheduler beat --loglevel=info
+	@ echo ''
+
 lint:
 	@ echo '<<<<<<<<<<linting>>>>>>>>>'
 	flake8 .
@@ -119,7 +129,7 @@ start:
 	docker-compose up -d
 
 #@-- command to start the application --@#
-start_verbose:
+start-verbose:
 	@echo "<<<<<<<<<<Start up the api containers after building>>>>>>>>>>>>>>"
 	@echo ""
 	docker-compose up
