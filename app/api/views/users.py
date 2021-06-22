@@ -2,7 +2,7 @@
 from app.api.contract.contract_actions import get_account_tokens
 from app import api
 from app.api import signs_ns
-from app.api.helpers.signs import (check_existing_user, date_validator,
+from app.api.helpers.signs import (check_existing_user,
                                    user_address_validator, validate_action)
 from app.api.models import SignHash, User, MintSign
 from app.api.schema import mint_sign_schema, user_schema

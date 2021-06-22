@@ -1,6 +1,5 @@
 import json
 import os
-import pdb
 
 from config import AppConfig
 
@@ -12,7 +11,6 @@ public_address = None
 contract_address = AppConfig.CONTRACT_ADDRESS
 private_key = AppConfig.PRIVATE_KEY
 ipfs_url = AppConfig.IPFS_GATEWAY_URL
-test_address = "0x099446CAd9294C5537D8e2996f0d440C0cb381B3"
 
 script_dir = os.path.dirname(__file__)
 abi_path = os.path.join(script_dir, 'abi.json')

@@ -97,7 +97,9 @@ def celery_beat_stats():
 
     file_data = shelve.open(
         'celerybeat-schedule'
-    )  # Name of the file used by PersistentScheduler to store the last run times of periodic tasks.
+    )
+    # Name of the file used by PersistentScheduler to store the
+    # last run times of periodic tasks.
 
     entries = file_data.get('entries')
 
@@ -120,8 +122,6 @@ def celery_beat_stats():
         })), 503
 
     return jsonify(dict(message={'Okay tasks': ok_tasks})), 200
-
-
 
 
 if __name__ == "__main__":

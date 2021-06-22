@@ -1,6 +1,4 @@
 from sqlalchemy import text
-import pdb
-
 from ..models.users import MintSign
 from ..services import celery_scheduler
 from . import (contract_address, contract_instance, private_key,
@@ -58,7 +56,8 @@ def mint_token(user_address, tokenURI):
         'chainId': web3.eth.chainId,
         'gas': 2000000,
         'gasPrice': web3.eth.gasPrice,
-        'data': contract_instance.encodeABI(fn_name="mintToken", args=[user_address, tokenURI])
+        'data': contract_instance.encodeABI(fn_name="mintToken",
+                                            args=[user_address, tokenURI])
     }
     signed_tx = web3.eth.account.signTransaction(tx, private_key)
     try:
