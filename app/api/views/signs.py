@@ -1,4 +1,5 @@
 """Module for Zodiac resource"""
+from app.api.models.users import SignHash
 from app import api
 from app.api import signs_ns
 from app.api.helpers.constants import ZODIAC_ANIMALS
@@ -147,9 +148,11 @@ class GetUserZodiacResource(Resource):
             base_index=base_index).first()
         day = DaySign.query.filter_by(day=day).first()
         hash_data = dict_hash(data)
+        minted = True if SignHash.query.filter_by(signhash=hash_data).first() else False
         setattr(sign, "month", month)
         setattr(sign, "day", day)
         setattr(sign, "hash", hash_data)
+        setattr(sign, "minted", minted)
         return sign
 
 

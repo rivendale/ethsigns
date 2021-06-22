@@ -278,5 +278,9 @@ def mint_token_validator(create=True):
                         type=str,
                         required=create,
                         help='Transaction Hash:', location='json',)
+    parser.add_argument('sign_hash',
+                        type=str,
+                        required=create,
+                        help='Sign Hash:', location='json',)
 
     return parser

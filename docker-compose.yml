@@ -20,6 +20,8 @@ services:
       - "6378:6379"
     expose:
       - "6378"
+    volumes:
+      - redis_volume:/data
   app:
     restart: always
     build:
@@ -73,3 +75,4 @@ services:
 volumes:
   static_volume:
   database_volume:
+  redis_volume:

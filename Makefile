@@ -99,6 +99,16 @@ run:
 	python ethsigns.py runserver
 	@ echo ''
 
+celery-worker:
+	@ echo '<<<<<<<<<<starting celery beat>>>>>>>>>'
+	celery -A celery_worker.celery_app worker --loglevel=info
+	@ echo ''
+
+celery-beat:
+	@ echo '<<<<<<<<<<starting celery beat>>>>>>>>>'
+	celery -A celery_conf.celery_periodic_scheduler beat --loglevel=info
+	@ echo ''
+
 lint:
 	@ echo '<<<<<<<<<<linting>>>>>>>>>'
 	flake8 .

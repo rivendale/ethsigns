@@ -133,9 +133,13 @@ class UserTokensResource(Resource):
         Returns:
             tokens (str): user tokens
         """
+        tokens = []
         check_existing_user({"address": address})
-        import pdb; pdb.set_trace()
-        tokens = get_account_tokens(address)
+        try:
+            tokens = get_account_tokens(address)
+        except Exception as e:
+            print(e)
+            pass
 
         return tokens, 200
 
@@ -151,9 +155,7 @@ class MintTokenZodiacResource(Resource):
     @signs_ns.expect(mint_token_validator(create=True))
     def post(self, *args, **kwargs):
         """
-        Function to retrieve a sign
-        Args:
-            sign_id (int): sign ID
+        Function to mint token
         Returns:
             sign (obj): sign data
         """
@@ -161,8 +163,12 @@ class MintTokenZodiacResource(Resource):
         mint_data['created_at'] = datetime.now()
 
         mint_sign = MintSign(data=mint_data)
-        # mint_sign = MintSign.query.filter_by(id=7).first()
         mint_sign.save()
         user = check_existing_user({'address': mint_data['user_address']})
         user.add_mint(mint_sign)
+
+        sign_hash = mint_data.get("sign_hash")
+        sign = SignHash({"sign_hash": sign_hash}).save()
+        user.add_sign(sign)
+
         return mint_sign
