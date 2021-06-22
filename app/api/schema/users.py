@@ -1,7 +1,6 @@
 from flask_restplus import fields
 from flask_restplus import marshal
 from app.api import signs_ns
-import pdb
 
 
 sign_hashes_schema = {

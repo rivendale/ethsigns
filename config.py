@@ -39,6 +39,7 @@ class Config(object):
         'CELERY_BROKER_URL', 'redis://localhost:6379/0')
     result_backend = getenv(
         'CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
+    web3 = None
 
 
 class ProductionConfig(Config):
@@ -48,8 +49,7 @@ class ProductionConfig(Config):
 class DevelopmentConfig(Config):
     """App development configuration."""
 
-    web3 = None
-    if not 'pytest' in sys.modules:
+    if 'pytest' not in sys.modules:
         web3 = Web3(Web3.HTTPProvider(Config.RPC_URL))
 
         web3.middleware_onion.inject(middleware.geth_poa_middleware,  layer=0)

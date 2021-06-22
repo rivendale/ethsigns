@@ -21,7 +21,8 @@ def celery_task_state(*args, **kwargs):
     is_cron_task = kwargs.get('is_cron_task', True)
     next_run = now + task.schedule.remaining_estimate(task.last_run_at)
 
-    if_condition = timedelta() < task.schedule.remaining_estimate(task.last_run_at) if is_cron_task else now.replace(tzinfo=utc) < (task.last_run_at + task.schedule.run_every).replace(tzinfo=utc)
+    if_condition = timedelta() < task.schedule.remaining_estimate(task.last_run_at) if is_cron_task else now.replace(
+        tzinfo=utc) < (task.last_run_at + task.schedule.run_every).replace(tzinfo=utc)
     if if_condition:
         ok_tasks[task_name] = {
             'status': 'Okay',
