@@ -80,9 +80,11 @@ def date_validator(func):
         try:
             year = int(norm_query.get('year', ""))
             month = int(norm_query.get('month', ""))
+            address = norm_query.get('address', "")
             day = int(norm_query.get('day', ""))
             data['year'] = year
             data['month'] = month
+            data['address'] = address
             try:
                 dob = datetime.datetime(year=year, month=month, day=day)
                 data['day'] = calendar.day_name[dob.weekday()]
