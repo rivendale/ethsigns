@@ -1,12 +1,13 @@
 """Module for Zodiac resource"""
 from app.api.models.users import SignHash
 from app import api
+from app import db
 from app.api import signs_ns
 from app.api.helpers.constants import ZODIAC_ANIMALS
-from app.api.helpers.signs import (check_existing_month_signs,
+from app.api.helpers.signs import (check_existing_month_signs, check_existing_user,
                                    check_existing_year_signs, date_validator, dict_hash,
                                    return_not_found)
-from app.api.models import DaySign, MonthSign, Zodiacs
+from app.api.models import DaySign, MonthSign, Zodiacs, User
 from app.api.schema import (day_signs_schema, month_signs_schema, signs_schema,
                             year_signs_schema)
 from app.api.validators.validators import (day_sign_validation,
@@ -127,6 +128,10 @@ class GetUserZodiacResource(Resource):
                       "description": "Day of birth",
                       "required": False,
                       "type": "int"
+                  }, "address": {
+                      "description": "User address",
+                      "required": False,
+                      "type": "int"
                   }})
     @date_validator
     @signs_ns.marshal_with(signs_schema, envelope='sign')
@@ -141,6 +146,8 @@ class GetUserZodiacResource(Resource):
         year = data.get("year", '')
         month = data.get("month", '')
         day = data.get("day", '')
+        address = data.get("address", '')
+        del data['address']
         month = MonthSign.query.filter_by(month=month).first()
         base_year = 1948
         base_index = (year-base_year) % 12
@@ -148,11 +155,20 @@ class GetUserZodiacResource(Resource):
             base_index=base_index).first()
         day = DaySign.query.filter_by(day=day).first()
         hash_data = dict_hash(data)
-        minted = True if SignHash.query.filter_by(signhash=hash_data).first() else False
+        minted = False
+        if address:
+            user = check_existing_user({'address': address})
+            result = db.session.query(User.address, SignHash.signhash).filter(
+                SignHash.signhash == hash_data).filter(
+                    User.address == user.address).first()
+            if result:
+                minted = True
+
         setattr(sign, "month", month)
         setattr(sign, "day", day)
         setattr(sign, "hash", hash_data)
         setattr(sign, "minted", minted)
+        setattr(sign, "minting_fee", 400000000000000)
         return sign
 
 

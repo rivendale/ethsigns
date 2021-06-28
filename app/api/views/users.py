@@ -1,6 +1,7 @@
 """Module for user resource"""
 from app.api.contract.contract_actions import get_account_tokens
 from app import api
+from app import db
 from app.api import signs_ns
 from app.api.helpers.signs import (check_existing_user,
                                    user_address_validator, validate_action)
@@ -106,12 +107,14 @@ class VerifyAssetResource(Resource):
         """
         valid = False
         user = check_existing_user({"address": address})
-        sign = SignHash.query.filter_by(signhash=sign_hash).first()
+        # sign = SignHash.query.filter_by(signhash=sign_hash).first()
+        result = db.session.query(User.address, SignHash.signhash).filter(
+            SignHash.signhash == sign_hash).filter(User.address == user.address).first()
 
         # if not sign:
         #     return_not_found(signs_ns, 'sign hash')
 
-        if sign in user.sign_hashes:
+        if result:
             valid = True
         return {"valid": valid}, 200
 

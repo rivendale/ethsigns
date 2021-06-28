@@ -13,6 +13,10 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 def create_nft(nft_metadata):
     del nft_metadata['image_url']
+    del nft_metadata['minted']
+    del nft_metadata['hash']
+    del nft_metadata['minting_fee']
+    del nft_metadata['id']
     temp_file = tempfile.NamedTemporaryFile(mode="w+")
     json.dump(nft_metadata, temp_file)
     temp_file.flush()
@@ -22,7 +26,7 @@ def create_nft(nft_metadata):
     image_data = open(os.path.join(basedir, f'../../static/{asset_name}.png'), 'rb')
     jsonfile = open(temp_file.name, 'r')
     files = [
-        ('file', ("dog.png", image_data, 'image/png')),
+        ('file', (f"{asset_name}.png", image_data, 'image/png')),
         ('file', ("metadata.json", jsonfile, 'application/json'))
     ]
 
