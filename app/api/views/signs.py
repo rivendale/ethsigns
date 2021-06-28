@@ -159,7 +159,8 @@ class GetUserZodiacResource(Resource):
         if address:
             user = check_existing_user({'address': address})
             result = db.session.query(User.address, SignHash.signhash).filter(
-                SignHash.signhash == hash_data).filter(User.address == user.address).first()
+                SignHash.signhash == hash_data).filter(
+                    User.address == user.address).first()
             if result:
                 minted = True
 
@@ -167,6 +168,7 @@ class GetUserZodiacResource(Resource):
         setattr(sign, "day", day)
         setattr(sign, "hash", hash_data)
         setattr(sign, "minted", minted)
+        setattr(sign, "minting_fee", 400000000000000)
         return sign
 
 

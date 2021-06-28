@@ -9,9 +9,17 @@ from flask_restplus import apidoc
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.middleware.proxy_fix import ProxyFix
 from flask_caching import Cache
+from celery.utils.log import get_task_logger
+from contextlib import contextmanager
 
 from app.api import api_blueprint, signs_ns
 from app.api.resources import api
+
+
+logger = get_task_logger(__name__)
+
+LOCK_EXPIRE = 60 * 10  # Lock expires in 10 minutes
+
 
 authorizations = {'Bearer Auth': {
     'type': 'apiKey',
@@ -30,7 +38,6 @@ cache = Cache(config={
     'CACHE_TYPE': 'redis',
     'CACHE_REDIS_URL': AppConfig.REDIS_URL
 })
-
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})

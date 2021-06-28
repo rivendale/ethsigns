@@ -1,6 +1,5 @@
 """Module for user resource"""
-from app.api.contract.contract_actions import (
-    get_account_tokens, get_wallet_account_balance)
+from app.api.contract.contract_actions import (get_wallet_account_balance)
 from app import api
 from app.api import signs_ns
 from app.api.schema import admin_schema

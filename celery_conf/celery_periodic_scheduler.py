@@ -4,13 +4,13 @@
 from datetime import timedelta
 
 # Services
-from app.api.services import celery_scheduler
+from app import celery_app
 
-celery_scheduler.conf.beat_schedule = {
+celery_app.conf.beat_schedule = {
 
 
     'complete-pending-transactions': {
         'task': 'complete-pending-transactions',
-        'schedule': timedelta(minutes=1),
+        'schedule': timedelta(seconds=30),
     },
 }
