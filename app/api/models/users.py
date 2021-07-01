@@ -42,8 +42,15 @@ class MetamaskUser(db.Model, ModelOperations):
     mint_sign = db.relationship("MintSign",
                                 secondary=dob_association_table)
 
+    @property
+    def tokens_minted(self):
+        """
+        Get total tokens minted
+        """
+        return len(self.mint_sign)
+
     def __repr__(self):
-        return '<MetamaskUser {}>'.format(self.address)
+        return '<User {}>'.format(self.address)
 
     def __init__(self, user):
         """Constructor object

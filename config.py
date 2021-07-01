@@ -40,6 +40,8 @@ class Config(object):
     result_backend = getenv(
         'CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
     web3 = None
+    MINTING_FEE = getenv('MINTING_FEE', 400000000000000)
+    MAX_TOKEN_COUNT = int(getenv('MAX_TOKEN_COUNT', 1000))
 
 
 class ProductionConfig(Config):

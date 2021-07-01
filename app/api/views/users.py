@@ -1,4 +1,5 @@
 """Module for user resource"""
+from config import Config
 from app.api.contract.contract_actions import get_account_tokens
 from app import api
 from app import db
@@ -175,3 +176,29 @@ class MintTokenZodiacResource(Resource):
         user.add_sign(sign)
 
         return mint_sign
+
+
+@api.route('/users/stats/<address>/')
+class UserStatsResource(Resource):
+    """
+    Resource to handle:
+        - get user stats
+    """
+
+    @signs_ns.doc(description="Get User stats")
+    def get(self, address, **kwargs):
+        """
+        Get User stats
+
+        Args:
+            address (int): user address
+        Returns:
+            stats (dict): user stats
+        """
+        user = check_existing_user({"address": address})
+        stats = {
+            "tokens_minted": user.tokens_minted,
+            "remaining_mints": Config.MAX_TOKEN_COUNT - user.tokens_minted
+        }
+
+        return stats, 200
