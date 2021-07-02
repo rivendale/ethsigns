@@ -11,6 +11,6 @@ celery_app.conf.beat_schedule = {
 
     'complete-pending-transactions': {
         'task': 'complete-pending-transactions',
-        'schedule': timedelta(seconds=30),
+        'schedule': timedelta(seconds=10),
     },
 }

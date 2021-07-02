@@ -1,16 +1,18 @@
 """Module for user resource"""
-from app.api.contract.contract_actions import get_account_tokens
-from app import api
-from app import db
+from datetime import datetime
+
+from app import api, db
 from app.api import signs_ns
-from app.api.helpers.signs import (check_existing_user,
-                                   user_address_validator, validate_action)
-from app.api.models import SignHash, User, MintSign
+from app.api.contract.contract_actions import (complete_pending_transactions,
+                                               get_account_tokens)
+from app.api.helpers.signs import (check_existing_user, user_address_validator,
+                                   validate_action)
+from app.api.models import MintSign, SignHash, User
 from app.api.schema import mint_sign_schema, user_schema
+from config import Config
 from flask_restplus import Resource
 
 from ..validators.validators import mint_token_validator
-from datetime import datetime
 
 
 @api.route('/users/')
@@ -173,5 +175,32 @@ class MintTokenZodiacResource(Resource):
         sign_hash = mint_data.get("sign_hash")
         sign = SignHash({"sign_hash": sign_hash}).save()
         user.add_sign(sign)
+        complete_pending_transactions.delay()
 
         return mint_sign
+
+
+@api.route('/users/stats/<address>/')
+class UserStatsResource(Resource):
+    """
+    Resource to handle:
+        - get user stats
+    """
+
+    @signs_ns.doc(description="Get User stats")
+    def get(self, address, **kwargs):
+        """
+        Get User stats
+
+        Args:
+            address (int): user address
+        Returns:
+            stats (dict): user stats
+        """
+        user = check_existing_user({"address": address})
+        stats = {
+            "tokens_minted": user.tokens_minted,
+            "remaining_mints": Config.MAX_TOKEN_COUNT - user.tokens_minted
+        }
+
+        return stats, 200

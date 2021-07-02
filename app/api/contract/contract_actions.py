@@ -61,12 +61,13 @@ def withdraw_to_wallet():
 
         tx = contract_instance.functions.withdraw().buildTransaction({
             'chainId': web3.eth.chainId,
-            'gas': 2000000,
+            # 'gas': 2000000,
             'gasPrice': web3.eth.gasPrice,
             # 'gasPrice': web3.toWei('1', 'gwei'),
             'nonce': nonce,
             'from': public_address
         })
+        tx['gas'] = web3.eth.estimateGas(tx)
         signed_tx = web3.eth.account.signTransaction(tx, private_key)
         web3.eth.sendRawTransaction(signed_tx.rawTransaction)
         status = True
@@ -128,11 +129,12 @@ def mint_token(user_address, tokenURI):
         'to': contract_address,
         'from': web3.eth.account.from_key(private_key).address,
         'chainId': web3.eth.chainId,
-        'gas': 2000000,
-        'gasPrice': web3.eth.gasPrice,
+        # 'gas': web3.toHex(2000000),
+        'gasPrice': web3.toHex(web3.eth.gasPrice),
         'data': contract_instance.encodeABI(fn_name="mintToken",
                                             args=[user_address, tokenURI])
     }
+    tx['gas'] = web3.eth.estimateGas(tx)
     signed_tx = web3.eth.account.signTransaction(tx, private_key)
     try:
         tx_hash = web3.eth.sendRawTransaction(web3.toHex(signed_tx.rawTransaction))
@@ -152,7 +154,7 @@ def complete_pending_transactions(self):
         # of the feed URL.
         transaction_hash_hexdigest = md5(transaction_hash.encode()).hexdigest()
         lock_id = '{0}-lock-{1}'.format(self.name, transaction_hash_hexdigest)
-        logger.debug('Importing feed: %s', transaction_hash)
+        logger.debug('Handling Transaction: %s', transaction_hash)
         with memcache_lock(lock_id, self.app.oid) as acquired:
             if acquired:
                 if verify_transaction(transaction_hash):

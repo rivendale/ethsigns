@@ -53,6 +53,6 @@ signs_schema.update({
                                   attribute="month", description="Sign's month details"),
     'day_animal': fields.Nested(day_signs_schema, skip_none=True,
                                 attribute="day", description="Sign's day details"),
-    'minting_fee': fields.Integer(description='Minting fee'),
+    'minting_fee': fields.Float(description='Minting fee'),
 })
 signs_schema = signs_ns.model('Zodiacs', signs_schema)

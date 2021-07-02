@@ -1,19 +1,20 @@
 """Module for Zodiac resource"""
-from app.api.models.users import SignHash
-from app import api
-from app import db
+from app import api, db
 from app.api import signs_ns
 from app.api.helpers.constants import ZODIAC_ANIMALS
-from app.api.helpers.signs import (check_existing_month_signs, check_existing_user,
-                                   check_existing_year_signs, date_validator, dict_hash,
-                                   return_not_found)
-from app.api.models import DaySign, MonthSign, Zodiacs, User
+from app.api.helpers.signs import (check_existing_month_signs,
+                                   check_existing_user,
+                                   check_existing_year_signs, date_validator,
+                                   dict_hash, return_not_found)
+from app.api.models import DaySign, MonthSign, User, Zodiacs
+from app.api.models.users import SignHash
 from app.api.schema import (day_signs_schema, month_signs_schema, signs_schema,
                             year_signs_schema)
 from app.api.validators.validators import (day_sign_validation,
                                            month_sign_update_validation,
                                            month_sign_validation,
                                            sign_validation)
+from config import Config
 from flask_restplus import Resource
 
 
@@ -168,7 +169,7 @@ class GetUserZodiacResource(Resource):
         setattr(sign, "day", day)
         setattr(sign, "hash", hash_data)
         setattr(sign, "minted", minted)
-        setattr(sign, "minting_fee", 400000000000000)
+        setattr(sign, "minting_fee", Config.MINTING_FEE)
         return sign
 
 
