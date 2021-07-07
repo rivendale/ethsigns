@@ -47,7 +47,14 @@ class MetamaskUser(db.Model, ModelOperations):
         """
         Get total tokens minted
         """
-        return len(self.mint_sign)
+        return len([sign for sign in self.mint_sign if sign.minted])
+
+    @property
+    def pending_mints(self):
+        """
+        Get total tokens pending mints
+        """
+        return len([sign for sign in self.mint_sign if not sign.minted])
 
     def __repr__(self):
         return '<User {}>'.format(self.address)

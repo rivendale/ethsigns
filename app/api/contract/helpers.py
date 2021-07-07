@@ -17,6 +17,8 @@ def create_nft(nft_metadata):
     del nft_metadata['hash']
     del nft_metadata['minting_fee']
     del nft_metadata['id']
+    del nft_metadata['month_animal']['id']
+    del nft_metadata['day_animal']['id']
     temp_file = tempfile.NamedTemporaryFile(mode="w+")
     json.dump(nft_metadata, temp_file)
     temp_file.flush()

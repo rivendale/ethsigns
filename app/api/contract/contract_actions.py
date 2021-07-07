@@ -54,28 +54,34 @@ logger = get_task_logger(__name__)
 
 
 def withdraw_to_wallet():
-    status = False
+    tx_hash = ""
 
     try:
         nonce = web3.eth.getTransactionCount(public_address, "latest")
 
-        tx = contract_instance.functions.withdraw().buildTransaction({
-            'chainId': web3.eth.chainId,
-            # 'gas': 2000000,
-            'gasPrice': web3.eth.gasPrice,
-            # 'gasPrice': web3.toWei('1', 'gwei'),
+        data = {
             'nonce': nonce,
-            'from': public_address
-        })
-        tx['gas'] = web3.eth.estimateGas(tx)
-        signed_tx = web3.eth.account.signTransaction(tx, private_key)
-        web3.eth.sendRawTransaction(signed_tx.rawTransaction)
-        status = True
+            'from': web3.eth.account.from_key(private_key).address,
+            'chainId': web3.eth.chainId
+        }
+
+        txn = contract_instance.functions.withdraw().buildTransaction(data)
+        signed_txn = web3.eth.account.signTransaction(txn, private_key)
+        tx_hash = web3.toHex(web3.eth.sendRawTransaction(signed_txn.rawTransaction))
+        # import pdb
+        # pdb.set_trace()
+        # contract_instance.functions.withdraw().transact()
+        # # tx['gas'] = web3.eth.estimateGas(tx)
+        # signed_tx = web3.eth.account.signTransaction(tx, private_key)
+        # resp = web3.eth.sendRawTransaction(signed_tx.rawTransaction)
 
     except Exception as e:
         print(e)
 
-    return status
+    return tx_hash
+
+
+# print(withdraw_to_wallet())
 
 
 def get_wallet_account_balance():
