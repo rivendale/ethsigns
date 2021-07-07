@@ -138,7 +138,7 @@ class UserTokensResource(Resource):
         Returns:
             tokens (str): user tokens
         """
-        tokens = []
+        tokens = {}
         check_existing_user({"address": address})
         try:
             tokens = get_account_tokens(address)
@@ -200,7 +200,8 @@ class UserStatsResource(Resource):
         user = check_existing_user({"address": address})
         stats = {
             "tokens_minted": user.tokens_minted,
-            "remaining_mints": Config.MAX_TOKEN_COUNT - user.tokens_minted
+            "remaining_mints": int(Config.MAX_TOKEN_COUNT - user.tokens_minted),
+            "pending_mints": user.pending_mints
         }
 
         return stats, 200
