@@ -1,4 +1,5 @@
 """Module for Zodiac resource"""
+from app.api.models.signs import NFT
 from app import api, db
 from app.api import signs_ns
 from app.api.helpers.constants import ZODIAC_ANIMALS
@@ -9,7 +10,7 @@ from app.api.helpers.signs import (check_existing_month_signs,
 from app.api.models import DaySign, MonthSign, User, Zodiacs
 from app.api.models.users import SignHash
 from app.api.schema import (day_signs_schema, month_signs_schema, signs_schema,
-                            year_signs_schema)
+                            year_signs_schema, paginated_schema)
 from app.api.validators.validators import (day_sign_validation,
                                            month_sign_update_validation,
                                            month_sign_validation,
@@ -279,6 +280,34 @@ class GetUpdateDaySignsResource(Resource):
             return_not_found(signs_ns, 'sign')
         sign.update(**sign_data)
         return sign, 200
+
+
+@api.route('/nfts/')
+class GetNFTs(Resource):
+    """
+    Resource to handle:
+        - get NFTs
+    """
+
+    @signs_ns.doc(description="get NFTs")
+    @signs_ns.marshal_with(paginated_schema, envelope='nfts')
+    def get(self, page=1, per_page=10):
+        """
+        Get NFTs
+
+        Returns:
+            signs (list): NFTs
+        """
+        signs = NFT.query.order_by(NFT.token_id.desc()).paginate(
+            page, per_page, error_out=False)
+        data = {
+            'page': signs.page,
+            'pages': signs.pages,
+            'per_page': signs.per_page,
+            'total': signs.total,
+            'items': signs.items,
+        }
+        return data, 200
 
 
 @api.route('/signs/month/<int:sign_id>/')

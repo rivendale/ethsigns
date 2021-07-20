@@ -56,3 +56,24 @@ signs_schema.update({
     'minting_fee': fields.Float(description='Minting fee'),
 })
 signs_schema = signs_ns.model('Zodiacs', signs_schema)
+
+
+nft_schema = {
+    'token_id': fields.Integer(description='Token ID'),
+    'image_url': fields.String(description='NFT image url'),
+    'metadata_url': fields.String(description='NFT metadata url'),
+    'token_metadata': fields.Raw(attribute='token_metadata',
+                                 description="Token Metadata"),
+}
+nft_schema = signs_ns.model('NFT', nft_schema)
+paginated_schema = {
+    'page': fields.Integer(description='Page'),
+    'pages': fields.Integer(description='Pages'),
+    'per_page': fields.Integer(description='Items Per page'),
+    'total': fields.Integer(description='Token ID'),
+    'items': fields.Nested(nft_schema, skip_none=True,
+                           description="Tokens"),
+
+}
+
+paginated_schema = signs_ns.model('NFTs', paginated_schema)

@@ -52,13 +52,7 @@ class DevelopmentConfig(Config):
     """App development configuration."""
 
     if 'pytest' not in sys.modules:
-        # from web3.auto.infura import w3
-        # public_address = "0xb55b7719819202b7eF036E664CBC129B657A0c45"
         web3 = Web3(Web3.HTTPProvider(Config.RPC_URL))
-        # import pdb
-        # pdb.set_trace()
-        # web3.eth.getTransactionCount(public_address, "latest")
-
         web3.middleware_onion.inject(middleware.geth_poa_middleware,  layer=0)
 
     SQLALCHEMY_DATABASE_URI = getenv(
