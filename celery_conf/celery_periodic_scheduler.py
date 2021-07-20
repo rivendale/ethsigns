@@ -13,4 +13,8 @@ celery_app.conf.beat_schedule = {
         'task': 'complete-pending-transactions',
         'schedule': timedelta(seconds=10),
     },
+    'list-minted-tokens': {
+        'task': 'list-minted-tokens',
+        'schedule': timedelta(minutes=1),
+    },
 }

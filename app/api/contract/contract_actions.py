@@ -8,85 +8,62 @@ from ...services.memecache import memcache_lock
 from ..models.users import MintSign
 from . import (contract_address, contract_instance, private_key,
                public_address, web3)
-from .helpers import create_nft, format_sign, make_gateway_url
+from .helpers import (create_nft, format_sign,
+                      get_nft_data, make_gateway_url,
+                      strip_ipfs_uri_prefix)
+
+from ..models import NFT
 
 logger = get_task_logger(__name__)
 
 
-# def transfer_token(token_ids, to_address, from_address):
-#     transaction_hashes = []
-#     error_messages = {}
-
-#     for id_ in token_ids:
-#         token_owner = contract_instance.functions.ownerOf(id_).call()
-#         if token_owner == to_address:
-#             error_messages.update({id_: "Same TO & From address"})
-#         elif from_address != token_owner:
-#             error_messages.update({id_: "Token not owned by the 'from' address"})
-#         else:
-#             try:
-#                 nonce = web3.eth.getTransactionCount(public_address, "latest")
-
-#                 tx = contract_instance.functions.safeTransferFrom(
-#                     from_address, to_address, id_).buildTransaction({
-#                         'chainId': web3.eth.chainId,
-#                         'gas': 2000000,
-#                         'gasPrice': web3.eth.gasPrice,
-#                         # 'gasPrice': web3.toWei('1', 'gwei'),
-#                         'nonce': nonce,
-#                         'from': from_address
-#                     })
-#                 import pdb
-#                 pdb.set_trace()
-#                 signed_tx = web3.eth.account.signTransaction(tx, private_key)
-#                 import pdb
-#                 pdb.set_trace()
-#                 resp = web3.eth.sendRawTransaction(signed_tx.rawTransaction)
-
-#             except Exception as e:
-#                 error_messages.update({id_: e})
-
-#     return transaction_hashes, error_messages
-
-
-# transfer_token([32], "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-#                "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266")
+def value_based_gas_price_strategy(web3, transaction_params):
+    if transaction_params['value'] > web3.toWei(1, 'ether'):
+        return web3.toWei(20, 'gwei')
+    else:
+        return web3.toWei(5, 'gwei')
 
 
 def withdraw_to_wallet():
-    tx_hash = ""
+    nonce = web3.eth.getTransactionCount(public_address, "latest")
+    # web3.eth.setGasPriceStrategy(value_based_gas_price_strategy)
+
+    tx = {
+        'nonce': web3.toHex(nonce),
+        'to': contract_address,
+        'from': web3.eth.account.from_key(private_key).address,
+        'chainId': web3.eth.chainId,
+        'gasPrice': web3.toHex(int(web3.eth.gasPrice * 1.2)),
+        # 'gasPrice': 8000000000,
+        'data': contract_instance.encodeABI(fn_name="withdraw", args=[])
+    }
+    tx['gas'] = web3.toHex(int(web3.eth.estimateGas(tx) * 1.2))
+    signed_tx = web3.eth.account.signTransaction(tx, private_key)
 
     try:
-        nonce = web3.eth.getTransactionCount(public_address, "latest")
-
-        data = {
-            'nonce': nonce,
-            'from': web3.eth.account.from_key(private_key).address,
-            'chainId': web3.eth.chainId
-        }
-
-        txn = contract_instance.functions.withdraw().buildTransaction(data)
-        signed_txn = web3.eth.account.signTransaction(txn, private_key)
-        tx_hash = web3.toHex(web3.eth.sendRawTransaction(signed_txn.rawTransaction))
+        tx_hash = web3.eth.sendRawTransaction(web3.toHex(signed_tx.rawTransaction))
         # import pdb
         # pdb.set_trace()
-        # contract_instance.functions.withdraw().transact()
-        # # tx['gas'] = web3.eth.estimateGas(tx)
-        # signed_tx = web3.eth.account.signTransaction(tx, private_key)
-        # resp = web3.eth.sendRawTransaction(signed_tx.rawTransaction)
-
+        return tx_hash
     except Exception as e:
         print(e)
+        # import pdb
+        # pdb.set_trace()
 
-    return tx_hash
 
-
-# print(withdraw_to_wallet())
+# withdraw_to_wallet()
+# txn = contract_instance.functions.withdraw().buildTransaction(data)
+# signed_txn = web3.eth.account.signTransaction(txn, private_key)
+# tx_hash = web3.toHex(web3.eth.sendRawTransaction(signed_txn.rawTransaction))
+# contract_instance.functions.setWallet(web3.eth.account.from_key(private_key).address).transact(data)
+# # tx['gas'] = web3.eth.estimateGas(tx)
+# signed_tx = web3.eth.account.signTransaction(tx, private_key)
+# resp = web3.eth.sendRawTransaction(signed_tx.rawTransaction)
 
 
 def get_wallet_account_balance():
     balance = contract_instance.functions.balance().call({"from": public_address})
-    return web3.fromWei(balance, "ether").to_eng_string()
+    return web3.toWei(balance, "ether").to_eng_string()
 
 
 def verify_transaction(hash):
@@ -101,11 +78,32 @@ def verify_transaction(hash):
     return valid
 
 
-def get_token_uri(token_id) -> list:
+def get_total_supply() -> int:
+    tokens = contract_instance.functions.totalSupply().call()
+    return tokens
+
+
+def get_token_uri(token_id, get_uri=True) -> str:
     token = contract_instance.functions.tokenURI(token_id).call()
-    if token:
+    if token and get_uri:
         token = make_gateway_url(token)
     return token
+
+
+@celery_app.task(name='list-minted-tokens')
+def format_tokens():
+    total_supply = get_total_supply()
+    for i in range(1, total_supply + 1):
+        if not NFT.query.filter_by(token_id=i).first():
+            token_uri = strip_ipfs_uri_prefix(get_token_uri(i, False))
+            nft_metadata = get_nft_data(token_uri)
+            if nft_metadata:
+                urls = make_gateway_url(token_uri, nft_metadata)
+                nft = NFT({"token_id": i,
+                           "image_url": urls['image_url'],
+                           "token_metadata": urls['token_metadata'],
+                           "metadata_url": urls['metadata_url']})
+                nft.save()
 
 
 def get_token_ids(account) -> list:
@@ -136,11 +134,11 @@ def mint_token(user_address, tokenURI):
         'from': web3.eth.account.from_key(private_key).address,
         'chainId': web3.eth.chainId,
         # 'gas': web3.toHex(2000000),
-        'gasPrice': web3.toHex(web3.eth.gasPrice),
+        'gasPrice': web3.toHex(int(web3.eth.gasPrice * 1.2)),
         'data': contract_instance.encodeABI(fn_name="mintToken",
                                             args=[user_address, tokenURI])
     }
-    tx['gas'] = web3.eth.estimateGas(tx)
+    tx['gas'] = web3.toHex(int(web3.eth.estimateGas(tx) * 1.2))
     signed_tx = web3.eth.account.signTransaction(tx, private_key)
     try:
         tx_hash = web3.eth.sendRawTransaction(web3.toHex(signed_tx.rawTransaction))
@@ -181,3 +179,43 @@ def complete_pending_transactions(self):
 
         logger.debug(
             'Feed %s is already being imported by another worker', transaction_hash)
+
+
+# def transfer_token(token_ids, to_address, from_address):
+#     transaction_hashes = []
+#     error_messages = {}
+
+#     for id_ in token_ids:
+#         token_owner = contract_instance.functions.ownerOf(id_).call()
+#         if token_owner == to_address:
+#             error_messages.update({id_: "Same TO & From address"})
+#         elif from_address != token_owner:
+#             error_messages.update({id_: "Token not owned by the 'from' address"})
+#         else:
+#             try:
+#                 nonce = web3.eth.getTransactionCount(public_address, "latest")
+
+#                 tx = contract_instance.functions.safeTransferFrom(
+#                     from_address, to_address, id_).buildTransaction({
+#                         'chainId': web3.eth.chainId,
+#                         'gas': 2000000,
+#                         'gasPrice': web3.eth.gasPrice,
+#                         # 'gasPrice': web3.toWei('1', 'gwei'),
+#                         'nonce': nonce,
+#                         'from': from_address
+#                     })
+#                 import pdb
+#                 pdb.set_trace()
+#                 signed_tx = web3.eth.account.signTransaction(tx, private_key)
+#                 import pdb
+#                 pdb.set_trace()
+#                 resp = web3.eth.sendRawTransaction(signed_tx.rawTransaction)
+
+#             except Exception as e:
+#                 error_messages.update({id_: e})
+
+#     return transaction_hashes, error_messages
+
+
+# transfer_token([32], "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+#                "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266")
