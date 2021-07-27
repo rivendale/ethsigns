@@ -3,12 +3,13 @@ from datetime import datetime
 
 from app import api, db
 from app.api import signs_ns
-from app.api.contract.contract_actions import (complete_pending_transactions,
-                                               get_account_tokens)
+from app.api.contract.contract_actions import (
+    complete_pending_transactions)
+#    get_account_tokens)
 from app.api.helpers.signs import (check_existing_user, user_address_validator,
                                    validate_action)
 from app.api.models import MintSign, SignHash, User
-from app.api.schema import mint_sign_schema, user_schema
+from app.api.schema import mint_sign_schema, user_schema, paginated_schema
 from config import Config
 from flask_restplus import Resource
 
@@ -129,7 +130,8 @@ class UserTokensResource(Resource):
     """
 
     @signs_ns.doc(description="Get User tokens")
-    def get(self, address, **kwargs):
+    @signs_ns.marshal_with(paginated_schema, envelope='nfts')
+    def get(self, address, page=1, per_page=10, **kwargs):
         """
         Get User tokens
 
@@ -138,15 +140,24 @@ class UserTokensResource(Resource):
         Returns:
             tokens (str): user tokens
         """
-        tokens = {}
-        check_existing_user({"address": address})
-        try:
-            tokens = get_account_tokens(address)
-        except Exception as e:
-            print(e)
-            pass
+        user = check_existing_user({"address": address})
 
-        return tokens, 200
+        items = user.user_nfts
+        data = {
+            'items': items,
+            'page': page,
+            'pages': len(items) // per_page,
+            'per_page': per_page,
+            'total': len(items),
+        }
+        # breakpoint()
+        # try:
+        #     tokens = get_account_tokens(address)
+        # except Exception as e:
+        #     print(e)
+        #     pass
+
+        return data, 200
 
 
 @api.route('/users/mint/')
@@ -200,7 +211,8 @@ class UserStatsResource(Resource):
         user = check_existing_user({"address": address})
         stats = {
             "tokens_minted": user.tokens_minted,
-            "remaining_mints": int(Config.MAX_TOKEN_COUNT - user.tokens_minted),
+            "remaining_mints": int(Config.MAX_TOKEN_COUNT -
+                                   db.session.query(MintSign).count()),
             "pending_mints": user.pending_mints
         }
 
