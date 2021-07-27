@@ -17,4 +17,8 @@ celery_app.conf.beat_schedule = {
         'task': 'list-minted-tokens',
         'schedule': timedelta(minutes=1),
     },
+    'assign-nfts-to-user': {
+        'task': 'assign-nfts-to-user',
+        'schedule': timedelta(minutes=1),
+    },
 }

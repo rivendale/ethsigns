@@ -1,3 +1,4 @@
+from app.api.helpers.signs import check_existing_user
 from hashlib import md5
 
 from app import celery_app
@@ -33,11 +34,11 @@ def withdraw_to_wallet():
         'to': contract_address,
         'from': web3.eth.account.from_key(private_key).address,
         'chainId': web3.eth.chainId,
-        'gasPrice': web3.toHex(int(web3.eth.gasPrice * 1.2)),
-        # 'gasPrice': 8000000000,
+        'gasPrice': web3.toHex(web3.eth.gasPrice),
         'data': contract_instance.encodeABI(fn_name="withdraw", args=[])
     }
-    tx['gas'] = web3.toHex(int(web3.eth.estimateGas(tx) * 1.2))
+    tx['gas'] = web3.toHex(web3.eth.estimateGas(tx))
+
     signed_tx = web3.eth.account.signTransaction(tx, private_key)
 
     try:
@@ -51,7 +52,6 @@ def withdraw_to_wallet():
         # pdb.set_trace()
 
 
-# withdraw_to_wallet()
 # txn = contract_instance.functions.withdraw().buildTransaction(data)
 # signed_txn = web3.eth.account.signTransaction(txn, private_key)
 # tx_hash = web3.toHex(web3.eth.sendRawTransaction(signed_txn.rawTransaction))
@@ -94,16 +94,43 @@ def get_token_uri(token_id, get_uri=True) -> str:
 def format_tokens():
     total_supply = get_total_supply()
     for i in range(1, total_supply + 1):
-        if not NFT.query.filter_by(token_id=i).first():
+        nft = NFT.query.filter_by(token_id=i).first()
+        if not nft:
             token_uri = strip_ipfs_uri_prefix(get_token_uri(i, False))
             nft_metadata = get_nft_data(token_uri)
             if nft_metadata:
                 urls = make_gateway_url(token_uri, nft_metadata)
                 nft = NFT({"token_id": i,
+                           "token_url": get_token_uri(i, False),
+                           "gateway_token_url": make_gateway_url(token_uri),
                            "image_url": urls['image_url'],
                            "token_metadata": urls['token_metadata'],
                            "metadata_url": urls['metadata_url']})
                 nft.save()
+
+        elif nft and not nft.token_url:
+            token_uri = get_token_uri(i, False)
+            nft.update(**{"gateway_token_url": make_gateway_url(token_uri),
+                          "token_url": token_uri})
+
+
+@celery_app.task(name='assign-nfts-to-user', bind=True)
+def assign_nfts_to_users(self):
+    total_supply = get_total_supply()
+    for i in range(1, total_supply + 1):
+        nft = NFT.query.filter_by(token_id=i).first()
+        if nft:
+            nft_hexdigest = md5(str(i).encode()).hexdigest()
+            lock_id = '{0}-lock-{1}'.format(self.name, nft_hexdigest)
+            logger.debug('Handling Transaction: %s', nft)
+            with memcache_lock(lock_id, self.app.oid) as acquired:
+                if acquired:
+                    token_owner = contract_instance.functions.ownerOf(i).call()
+                    user = check_existing_user({"address": token_owner})
+                    user.add_nft(nft)
+
+            logger.debug(
+                'NFT %s is already being handled by another worker', i)
 
 
 def get_token_ids(account) -> list:
@@ -119,6 +146,7 @@ def get_account_tokens(account) -> dict:
     token_ids = get_token_ids(account)
     tokens = {}
     for id_ in token_ids:
+
         token = get_token_uri(id_)
         tokens.update({id_: token})
     return tokens
@@ -133,12 +161,12 @@ def mint_token(user_address, tokenURI):
         'to': contract_address,
         'from': web3.eth.account.from_key(private_key).address,
         'chainId': web3.eth.chainId,
-        # 'gas': web3.toHex(2000000),
-        'gasPrice': web3.toHex(int(web3.eth.gasPrice * 1.2)),
+        'gasPrice': web3.toHex(web3.eth.gasPrice),
         'data': contract_instance.encodeABI(fn_name="mintToken",
-                                            args=[user_address, tokenURI])
+                                            args=[user_address,
+                                                  tokenURI])
     }
-    tx['gas'] = web3.toHex(int(web3.eth.estimateGas(tx) * 1.2))
+    tx['gas'] = web3.toHex(web3.eth.estimateGas(tx))
     signed_tx = web3.eth.account.signTransaction(tx, private_key)
     try:
         tx_hash = web3.eth.sendRawTransaction(web3.toHex(signed_tx.rawTransaction))
@@ -178,7 +206,7 @@ def complete_pending_transactions(self):
                             pending.update(**update_)
 
         logger.debug(
-            'Feed %s is already being imported by another worker', transaction_hash)
+            'Transaction %s is already being handled by another worker', transaction_hash)
 
 
 # def transfer_token(token_ids, to_address, from_address):
