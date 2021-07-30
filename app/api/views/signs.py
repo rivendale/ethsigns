@@ -10,7 +10,7 @@ from app.api.helpers.signs import (check_existing_month_signs,
 from app.api.models import DaySign, MonthSign, User, Zodiacs
 from app.api.models.users import SignHash
 from app.api.schema import (day_signs_schema, month_signs_schema, signs_schema,
-                            year_signs_schema, paginated_schema)
+                            year_signs_schema, paginated_schema, nft_schema)
 from app.api.validators.validators import (day_sign_validation,
                                            month_sign_update_validation,
                                            month_sign_validation,
@@ -308,6 +308,27 @@ class GetNFTs(Resource):
             'items': signs.items,
         }
         return data, 200
+
+
+@api.route('/nfts/<int:token_id>')
+class GetNFT(Resource):
+    """
+    Resource to handle:
+        - get NFT
+    """
+
+    @signs_ns.doc(description="get NFT")
+    @signs_ns.marshal_with(nft_schema, envelope='nft')
+    def get(self, token_id):
+        """
+        Get NFT
+
+        Returns:
+            signs (list): NFT
+        """
+        sign = NFT.query.filter_by(token_id=token_id).first()
+
+        return sign, 200
 
 
 @api.route('/signs/month/<int:sign_id>/')
