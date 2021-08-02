@@ -63,7 +63,7 @@ def withdraw_to_wallet():
 
 def get_wallet_account_balance():
     balance = contract_instance.functions.balance().call({"from": public_address})
-    return web3.toWei(balance, "ether").to_eng_string()
+    return web3.toWei(balance, "ether")
 
 
 def verify_transaction(hash):
