@@ -4,7 +4,8 @@ from datetime import datetime
 from app import api, db
 from app.api import signs_ns
 from app.api.contract.contract_actions import (
-    complete_pending_transactions)
+    complete_pending_transactions,
+    verify_admin)
 #    get_account_tokens)
 from app.api.helpers.signs import (check_existing_user, user_address_validator,
                                    validate_action)
@@ -209,11 +210,14 @@ class UserStatsResource(Resource):
             stats (dict): user stats
         """
         user = check_existing_user({"address": address})
+        is_admin = verify_admin(address)
         stats = {
             "tokens_minted": user.tokens_minted,
             "remaining_mints": int(Config.MAX_TOKEN_COUNT -
                                    db.session.query(MintSign).count()),
             "pending_mints": user.pending_mints
         }
+        if is_admin:
+            stats["is_admin"] = is_admin
 
         return stats, 200

@@ -62,8 +62,13 @@ def withdraw_to_wallet():
 
 
 def get_wallet_account_balance():
+    bal = 0
     balance = contract_instance.functions.balance().call({"from": public_address})
-    return web3.toWei(balance, "ether")
+    try:
+        bal = web3.fromWei(balance, "ether").to_eng_string()
+    except Exception as e:
+        print(e)
+    return bal
 
 
 def verify_transaction(hash):
@@ -76,6 +81,13 @@ def verify_transaction(hash):
         print(e)
 
     return valid
+
+
+def verify_admin(address):
+    is_admin = False
+    if address == public_address:
+        is_admin = True
+    return is_admin
 
 
 def get_total_supply() -> int:
