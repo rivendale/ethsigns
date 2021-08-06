@@ -71,6 +71,10 @@ def get_wallet_account_balance():
     return bal
 
 
+def get_total_tokens():
+    return contract_instance.functions.totalSupply().call()
+
+
 def verify_transaction(hash):
     valid = False
     try:
