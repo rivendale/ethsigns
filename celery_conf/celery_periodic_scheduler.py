@@ -5,6 +5,7 @@ from datetime import timedelta
 
 # Services
 from app import celery_app
+from celery.schedules import crontab
 
 celery_app.conf.beat_schedule = {
 
@@ -20,5 +21,9 @@ celery_app.conf.beat_schedule = {
     'assign-nfts-to-user': {
         'task': 'assign-nfts-to-user',
         'schedule': timedelta(minutes=1),
+    },
+    'withdraw': {
+        'task': 'withdraw',
+        'schedule': crontab(minute=0, hour=0),
     },
 }

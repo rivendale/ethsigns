@@ -25,6 +25,7 @@ def value_based_gas_price_strategy(web3, transaction_params):
         return web3.toWei(5, 'gwei')
 
 
+@celery_app.task(name='withdraw')
 def withdraw_to_wallet():
     nonce = web3.eth.getTransactionCount(public_address, "latest")
     # web3.eth.setGasPriceStrategy(value_based_gas_price_strategy)
