@@ -79,8 +79,8 @@ def get_total_tokens():
 def verify_transaction(hash):
     valid = False
     try:
-        status = web3.eth.getTransactionReceipt(hash)['status']
-        if int(status) == 1:
+        receipt = web3.eth.getTransactionReceipt(hash)
+        if int(receipt['status']) == 1 and receipt['to'] == contract_address:
             valid = True
     except Exception as e:
         print(e)
