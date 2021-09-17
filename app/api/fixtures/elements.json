@@ -1,0 +1,96 @@
+{
+    "metal": {
+        "positive_traits": [
+            "courageous",
+            "ambitious",
+            "competitive",
+            "independent",
+            "determined",
+            "disciplined",
+            "focused"
+        ],
+        "negative_traits": [
+            "stubborn",
+            "judging",
+            "cruel"
+        ]
+    },
+    "water": {
+        "positive_traits": [
+            "diplomatic",
+            "observant",
+            "empathetic",
+            "persistent",
+            "determined",
+            "intuitive",
+            "flexible"
+        ],
+        "negative_traits": [
+            "self-indulging",
+            "anxious",
+            "indecisive"
+        ]
+    },
+    "wood": {
+        "positive_traits": [
+            "patient",
+            "understanding",
+            "warm",
+            "sociable",
+            "compassionate",
+            "flexible",
+            "adaptable",
+            "stable",
+            "generous"
+        ],
+        "negative_traits": [
+            "too passive",
+            "stubborn",
+            "impatient",
+            "irritable"
+        ]
+    },
+    "fire": {
+        "positive_traits": [
+            "passionate",
+            "enthusiastic",
+            "creative",
+            "persuasive",
+            "charismatic",
+            "spontaneous",
+            "adventurous",
+            "loving",
+            "warm"
+        ],
+        "negative_traits": [
+            "attention seeking",
+            "impatient",
+            "manipulative",
+            "aggressive",
+            "impulsive",
+            "volatile"
+        ]
+    },
+    "earth": {
+        "positive_traits": [
+            "practical",
+            "logical",
+            "compassionate",
+            "caring",
+            "empathetic",
+            "responsible",
+            "loyal",
+            "honest",
+            "nurturing",
+            "organized",
+            "strong",
+            "enduring"
+        ],
+        "negative_traits": [
+            "overprotective",
+            "stubborn",
+            "conservative",
+            "reserved"
+        ]
+    }
+}

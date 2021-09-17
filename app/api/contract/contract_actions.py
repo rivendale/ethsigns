@@ -71,6 +71,8 @@ def get_wallet_account_balance():
         print(e)
     return bal
 
+# breakpoint()
+
 
 def get_total_tokens():
     return contract_instance.functions.totalSupply().call()
