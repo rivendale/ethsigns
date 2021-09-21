@@ -211,10 +211,10 @@ class UserStatsResource(Resource):
         """
         user = check_existing_user({"address": address})
         is_admin = verify_admin(address)
+        minted_tokens_count = db.session.query(MintSign).count()
         stats = {
-            "tokens_minted": user.tokens_minted,
-            "remaining_mints": int(Config.MAX_TOKEN_COUNT -
-                                   db.session.query(MintSign).count()),
+            "tokens_minted": minted_tokens_count,
+            "remaining_mints": int(Config.MAX_TOKEN_COUNT - minted_tokens_count),
             "pending_mints": user.pending_mints
         }
         if is_admin:
