@@ -1,4 +1,6 @@
 """Module for Zodiac resource"""
+from sqlalchemy.types import Unicode
+from flask_restplus import marshal
 from app.api.models.signs import NFT
 from app import api, db
 from app.api import signs_ns
@@ -308,6 +310,43 @@ class GetNFTs(Resource):
             'items': signs.items,
         }
         return data, 200
+
+
+@api.route('/trines/<sign_name>')
+class GetTrines(Resource):
+    """
+    Resource to handle:
+        - get Trines
+    """
+
+    @signs_ns.doc(description="get nft Trine")
+    def get(self, sign_name):
+        """
+        Get Trines
+
+        Returns:
+            trined (dict): Trines
+        """
+        trine_nfts = []
+        trines_groups = {
+            1: ['Rat', 'Dragon', 'Monkey'],
+            2: ['Ox', 'Snake', 'Rooster'],
+            3: ['Tiger', 'Horse', 'Dog'],
+            4: ['Rabbit', 'Goat', 'Pig'],
+        }
+
+        try:
+            nft_group = [i for i in trines_groups.values(
+            ) if sign_name.title() in i][0]
+            for sign in nft_group:
+                resp = (db.session.query(NFT)
+                        .filter(NFT.token_metadata['name']
+                                .astext.cast(Unicode) == sign).all())
+                for i in resp:
+                    trine_nfts.append(marshal(i, nft_schema))
+        except Exception:
+            pass
+        return trine_nfts, 200
 
 
 @api.route('/nfts/<int:token_id>')
