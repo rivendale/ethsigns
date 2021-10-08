@@ -117,10 +117,10 @@ class VerifyAssetResource(Resource):
 
         # if not sign:
         #     return_not_found(signs_ns, 'sign hash')
-
         if result:
             valid = True
-        return {"valid": valid}, 200
+        return {"valid": valid,
+                }, 200
 
 
 @api.route('/users/tokens/<address>/')
@@ -179,9 +179,12 @@ class MintTokenZodiacResource(Resource):
         mint_data = mint_token_validator().parse_args(strict=True)
         mint_data['created_at'] = datetime.now()
 
+        user = check_existing_user({'address': mint_data['user_address']})
+        if not mint_data.get('transaction_hash', None) and not\
+                sum([user.pending_mints, user.tokens_minted]) >= 1:
+            mint_data['transaction_hash'] = "free"
         mint_sign = MintSign(data=mint_data)
         mint_sign.save()
-        user = check_existing_user({'address': mint_data['user_address']})
         user.add_mint(mint_sign)
 
         sign_hash = mint_data.get("sign_hash")
@@ -210,12 +213,15 @@ class UserStatsResource(Resource):
             stats (dict): user stats
         """
         user = check_existing_user({"address": address})
+        # breakpoint()
         is_admin = verify_admin(address)
         minted_tokens_count = db.session.query(MintSign).count()
         stats = {
             "tokens_minted": minted_tokens_count,
             "remaining_mints": int(Config.MAX_TOKEN_COUNT - minted_tokens_count),
-            "pending_mints": user.pending_mints
+            "pending_mints": user.pending_mints,
+            'free_mint': minted_tokens_count <= 100 and
+            sum([user.pending_mints, user.tokens_minted]) == 0
         }
         if is_admin:
             stats["is_admin"] = is_admin

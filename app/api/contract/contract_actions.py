@@ -208,7 +208,7 @@ def complete_pending_transactions(self):
         logger.debug('Handling Transaction: %s', transaction_hash)
         with memcache_lock(lock_id, self.app.oid) as acquired:
             if acquired:
-                if verify_transaction(transaction_hash):
+                if verify_transaction(transaction_hash) or transaction_hash == "free":
                     sign = format_sign({"year": pending.dob.year,
                                         "month": pending.dob.month,
                                         "day": pending.dob.weekday(), })
@@ -226,6 +226,9 @@ def complete_pending_transactions(self):
 
         logger.debug(
             'Transaction %s is already being handled by another worker', transaction_hash)
+
+
+complete_pending_transactions()
 
 
 # def transfer_token(token_ids, to_address, from_address):
