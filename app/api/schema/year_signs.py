@@ -79,6 +79,8 @@ year_signs_schema = {
     'element': fields.String(attribute=lambda x:  get_element(x.year)
                              if hasattr(x, "year") else x.element,
                              description='Sign element'),
+    'lucky_element': fields.String(attribute="element",
+                                   description='Sign element'),
     "element_attributes": FormatElement(attribute=lambda x:  get_element(x.year)
                                         if hasattr(x, "year") else x.element,
                                         description='Sign element attributes'),
