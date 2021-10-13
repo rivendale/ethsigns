@@ -168,6 +168,7 @@ class GetUserZodiacResource(Resource):
             if result:
                 minted = True
 
+        setattr(sign, "year", year)
         setattr(sign, "month", month)
         setattr(sign, "day", day)
         setattr(sign, "hash", hash_data)

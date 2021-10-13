@@ -208,3 +208,34 @@ def dict_hash(dictionary: Dict[str, Any]) -> str:
     encoded = json.dumps(dictionary, sort_keys=True).encode()
     dhash.update(encoded)
     return dhash.hexdigest()
+
+
+# If the last number in your birth year is:
+
+# 0 or 1, you are a metal element.
+# 2 or 3, you are a water element.
+# 4 or 5, you are a wood element.
+# 6 or 7, you are a fire element.
+# 8 or 9, you are an earth element.
+
+def get_element(birth_year):
+    """
+    Function to get element
+    Args:
+        birth_year(int): birth year
+    Return:
+        element(str): element
+    """
+    ELEMENT_MAPPER = {
+        0: "Metal",
+        1: "Metal",
+        2: "Water",
+        3: "Water",
+        4: "Wood",
+        5: "Wood",
+        6: "Fire",
+        7: "Fire",
+        8: "Earth",
+        9: "Earth"
+    }
+    return ELEMENT_MAPPER[int(str(birth_year)[-1])]

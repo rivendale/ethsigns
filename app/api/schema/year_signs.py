@@ -3,10 +3,32 @@ import ast
 
 from flask_restplus import fields
 from app.api import signs_ns
+from app.api.helpers.signs import get_element
 from .month_signs import month_signs_schema
 from .day_signs import day_signs_schema
 import json
 import random
+
+
+class GetElement(fields.Raw):
+    """
+    Nested values Formatter
+    """
+
+    def format(self, value):
+        """
+        Return a formatted object
+        Args:
+            value (str): string object value
+        Returns:
+            (dict): formatted object
+        """
+        element_data = self.elements.get(value.lower())
+        data = {
+            'positive_traits': random.sample(element_data.get('positive_traits'), 3),
+            'negative_traits': random.sample(element_data.get('negative_traits'), 3),
+        }
+        return data
 
 
 class FormatElement(fields.Raw):
@@ -54,8 +76,11 @@ year_signs_schema = {
     'id': fields.Integer(description='The Sign identifier'),
     'name': fields.String(description='Sign name'),
     'description': fields.String(description='Sign description'),
-    'element': fields.String(description='Sign element'),
-    "element_attributes": FormatElement(attribute="element",
+    'element': fields.String(attribute=lambda x:  get_element(x.year)
+                             if hasattr(x, "year") else x.element,
+                             description='Sign element'),
+    "element_attributes": FormatElement(attribute=lambda x:  get_element(x.year)
+                                        if hasattr(x, "year") else x.element,
                                         description='Sign element attributes'),
     'force': fields.String(description='Sign force'),
     'image_url': fields.String(description='Sign Image Url'),

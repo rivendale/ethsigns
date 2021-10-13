@@ -119,6 +119,7 @@ def format_sign(data):
         base_index=base_index).first()
     day = DaySign.query.filter_by(day=calendar.day_name[day]).first()
     setattr(sign, "month", month)
+    setattr(sign, "year", year)
     setattr(sign, "day", day)
 
     resp = marshal(sign, signs_schema)

@@ -228,9 +228,6 @@ def complete_pending_transactions(self):
             'Transaction %s is already being handled by another worker', transaction_hash)
 
 
-complete_pending_transactions()
-
-
 # def transfer_token(token_ids, to_address, from_address):
 #     transaction_hashes = []
 #     error_messages = {}
