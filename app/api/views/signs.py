@@ -10,7 +10,7 @@ from app.api.helpers.signs import (check_existing_month_signs,
                                    check_existing_year_signs, date_validator,
                                    dict_hash, return_not_found)
 from app.api.models import DaySign, MonthSign, User, Zodiacs
-from app.api.models.users import SignHash
+from app.api.models.users import MintSign, SignHash
 from app.api.schema import (day_signs_schema, month_signs_schema, signs_schema,
                             year_signs_schema, paginated_schema, nft_schema)
 from app.api.validators.validators import (day_sign_validation,
@@ -147,6 +147,18 @@ class GetUserZodiacResource(Resource):
         Returns:
             sign (obj): sign data
         """
+        MINTING_FEE_RANGES = {
+            120: 25,
+            240: 50,
+            360: 75,
+            480: 100,
+            600: 125,
+            720: 150,
+            840: 175,
+            960: 200,
+            1080: 225,
+            1200: 250,
+        }
         year = data.get("year", '')
         month = data.get("month", '')
         day = data.get("day", '')
@@ -159,6 +171,7 @@ class GetUserZodiacResource(Resource):
             base_index=base_index).first()
         day = DaySign.query.filter_by(day=day).first()
         hash_data = dict_hash(data)
+        minted_tokens_count = db.session.query(MintSign).count()
         minted = False
         if address:
             user = check_existing_user({'address': address})
@@ -167,13 +180,21 @@ class GetUserZodiacResource(Resource):
                     User.address == user.address).first()
             if result:
                 minted = True
-
+        minting_fee = 25
+        try:
+            for i, v in enumerate(MINTING_FEE_RANGES.keys()):
+                if minted_tokens_count <= v and minted_tokens_count \
+                        > list(MINTING_FEE_RANGES.keys())[i-1]:
+                    minting_fee = MINTING_FEE_RANGES[v]
+                    break
+        except IndexError:
+            pass
         setattr(sign, "year", year)
         setattr(sign, "month", month)
         setattr(sign, "day", day)
         setattr(sign, "hash", hash_data)
         setattr(sign, "minted", minted)
-        setattr(sign, "minting_fee", Config.MINTING_FEE)
+        setattr(sign, "minting_fee", minting_fee)
         return sign
 
 
