@@ -40,6 +40,8 @@ class Config(object):
     result_backend = getenv(
         'CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
     web3 = None
+    MINTING_FEE = getenv('MINTING_FEE', 0.005503)
+    MAX_TOKEN_COUNT = float(getenv('MAX_TOKEN_COUNT', 1000))
 
 
 class ProductionConfig(Config):
@@ -51,7 +53,6 @@ class DevelopmentConfig(Config):
 
     if 'pytest' not in sys.modules:
         web3 = Web3(Web3.HTTPProvider(Config.RPC_URL))
-
         web3.middleware_onion.inject(middleware.geth_poa_middleware,  layer=0)
 
     SQLALCHEMY_DATABASE_URI = getenv(

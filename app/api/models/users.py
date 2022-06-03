@@ -15,6 +15,12 @@ dob_association_table = db.Table('user_transactions', db.Model.metadata,
                                  db.Column('mint_sign', db.Integer,
                                            db.ForeignKey('mint_sign.id'))
                                  )
+nft_association_table = db.Table('user_nfts', db.Model.metadata,
+                                 db.Column('user_id', db.Integer,
+                                           db.ForeignKey('metamask_user.id')),
+                                 db.Column('user_nft', db.Integer,
+                                           db.ForeignKey('NFT.id'))
+                                 )
 
 
 class SignHash(db.Model, ModelOperations):
@@ -41,9 +47,25 @@ class MetamaskUser(db.Model, ModelOperations):
 
     mint_sign = db.relationship("MintSign",
                                 secondary=dob_association_table)
+    user_nfts = db.relationship("NFT",
+                                secondary=nft_association_table)
+
+    @property
+    def tokens_minted(self):
+        """
+        Get total tokens minted
+        """
+        return len([sign for sign in self.mint_sign if sign.minted])
+
+    @property
+    def pending_mints(self):
+        """
+        Get total tokens pending mints
+        """
+        return len([sign for sign in self.mint_sign if not sign.minted])
 
     def __repr__(self):
-        return '<MetamaskUser {}>'.format(self.address)
+        return '<User {}>'.format(self.address)
 
     def __init__(self, user):
         """Constructor object

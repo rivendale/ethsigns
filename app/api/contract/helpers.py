@@ -1,3 +1,5 @@
+import secrets
+import string
 import os
 import calendar
 import requests
@@ -8,11 +10,45 @@ from flask_restplus import marshal
 
 from ..models.signs import DaySign, MonthSign, Zodiacs
 from ..schema import signs_schema
+
 basedir = os.path.abspath(os.path.dirname(__file__))
+
+headers = {
+    "Authorization": f"Bearer {AppConfig.IPFS_API_KEY}"
+}
+
+
+def generate_random_seed(size=45):
+    string.punctuation = '().-'
+    return ''.join(secrets.choice(
+        string.ascii_uppercase + string.ascii_lowercase +
+        string.punctuation + string.digits)
+        for i in range(size))
+
+
+def get_nft_data(cid):
+    nft = []
+    try:
+        response = requests.get(f"{AppConfig.IPFS_URL}/{cid}", headers=headers)
+        if response.status_code == 200:
+            files = response.json()['value']['files']
+            nft.append(files[0]['name'])
+            nft.append(files[1]['name'])
+        else:
+            print(response.content, cid)
+    except Exception as e:
+        print(e)
+    return nft
 
 
 def create_nft(nft_metadata):
     del nft_metadata['image_url']
+    del nft_metadata['minted']
+    del nft_metadata['hash']
+    del nft_metadata['minting_fee']
+    nft_metadata['id'] = generate_random_seed()
+    del nft_metadata['month_animal']['id']
+    del nft_metadata['day_animal']['id']
     temp_file = tempfile.NamedTemporaryFile(mode="w+")
     json.dump(nft_metadata, temp_file)
     temp_file.flush()
@@ -22,16 +58,13 @@ def create_nft(nft_metadata):
     image_data = open(os.path.join(basedir, f'../../static/{asset_name}.png'), 'rb')
     jsonfile = open(temp_file.name, 'r')
     files = [
-        ('file', ("dog.png", image_data, 'image/png')),
+        ('file', (f"{asset_name}.png", image_data, 'image/png')),
         ('file', ("metadata.json", jsonfile, 'application/json'))
     ]
 
-    headers = {
-        "Authorization": f"Bearer {AppConfig.IPFS_API_KEY}"
-    }
     cid = ""
     try:
-        resp = requests.post(AppConfig.IPFS_URL, files=files, headers=headers)
+        resp = requests.post(f"{AppConfig.IPFS_URL}/upload", files=files, headers=headers)
         if resp.status_code == 200:
             data = resp.json()
             cid = data['value']['cid']
@@ -59,8 +92,20 @@ def strip_ipfs_uri_prefix(cid_or_uri):
     return cid_or_uri
 
 
-def make_gateway_url(ipfs_uri):
-    return AppConfig.IPFS_GATEWAY_URL + '/' + strip_ipfs_uri_prefix(ipfs_uri)
+def make_gateway_url(ipfs_uri, metadata=None):
+    url = AppConfig.IPFS_GATEWAY_URL + '/' + strip_ipfs_uri_prefix(ipfs_uri)
+    if metadata:
+        urls = {
+            "image_url": f"{url}/{metadata[0]}",
+            "metadata_url": f"{url}/{metadata[1]}"
+        }
+        try:
+            metadata = requests.get(urls['metadata_url']).json()
+            urls['token_metadata'] = metadata
+        except Exception as e:
+            print(e)
+        return urls
+    return url
 
 
 def format_sign(data):
@@ -74,6 +119,7 @@ def format_sign(data):
         base_index=base_index).first()
     day = DaySign.query.filter_by(day=calendar.day_name[day]).first()
     setattr(sign, "month", month)
+    setattr(sign, "year", year)
     setattr(sign, "day", day)
 
     resp = marshal(sign, signs_schema)

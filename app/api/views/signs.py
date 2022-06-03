@@ -1,18 +1,23 @@
 """Module for Zodiac resource"""
-from app.api.models.users import SignHash
-from app import api
+from sqlalchemy.types import Unicode
+from flask_restplus import marshal
+from app.api.models.signs import NFT
+from app import api, db
 from app.api import signs_ns
 from app.api.helpers.constants import ZODIAC_ANIMALS
 from app.api.helpers.signs import (check_existing_month_signs,
-                                   check_existing_year_signs, date_validator, dict_hash,
-                                   return_not_found)
-from app.api.models import DaySign, MonthSign, Zodiacs
+                                   check_existing_user,
+                                   check_existing_year_signs, date_validator,
+                                   dict_hash, return_not_found)
+from app.api.models import DaySign, MonthSign, User, Zodiacs
+from app.api.models.users import MintSign, SignHash
 from app.api.schema import (day_signs_schema, month_signs_schema, signs_schema,
-                            year_signs_schema)
+                            year_signs_schema, paginated_schema, nft_schema)
 from app.api.validators.validators import (day_sign_validation,
                                            month_sign_update_validation,
                                            month_sign_validation,
                                            sign_validation)
+from config import Config
 from flask_restplus import Resource
 
 
@@ -127,6 +132,10 @@ class GetUserZodiacResource(Resource):
                       "description": "Day of birth",
                       "required": False,
                       "type": "int"
+                  }, "address": {
+                      "description": "User address",
+                      "required": False,
+                      "type": "int"
                   }})
     @date_validator
     @signs_ns.marshal_with(signs_schema, envelope='sign')
@@ -138,9 +147,23 @@ class GetUserZodiacResource(Resource):
         Returns:
             sign (obj): sign data
         """
+        MINTING_FEE_RANGES = {
+            120: 25,
+            240: 50,
+            360: 75,
+            480: 100,
+            600: 125,
+            720: 150,
+            840: 175,
+            960: 200,
+            1080: 225,
+            1200: 250,
+        }
         year = data.get("year", '')
         month = data.get("month", '')
         day = data.get("day", '')
+        address = data.get("address", '')
+        del data['address']
         month = MonthSign.query.filter_by(month=month).first()
         base_year = 1948
         base_index = (year-base_year) % 12
@@ -148,11 +171,30 @@ class GetUserZodiacResource(Resource):
             base_index=base_index).first()
         day = DaySign.query.filter_by(day=day).first()
         hash_data = dict_hash(data)
-        minted = True if SignHash.query.filter_by(signhash=hash_data).first() else False
+        minted_tokens_count = db.session.query(MintSign).count()
+        minted = False
+        if address:
+            user = check_existing_user({'address': address})
+            result = db.session.query(User.address, SignHash.signhash).filter(
+                SignHash.signhash == hash_data).filter(
+                    User.address == user.address).first()
+            if result:
+                minted = True
+        minting_fee = 25
+        try:
+            for i, v in enumerate(MINTING_FEE_RANGES.keys()):
+                if minted_tokens_count <= v and minted_tokens_count \
+                        > list(MINTING_FEE_RANGES.keys())[i-1]:
+                    minting_fee = MINTING_FEE_RANGES[v]
+                    break
+        except IndexError:
+            pass
+        setattr(sign, "year", year)
         setattr(sign, "month", month)
         setattr(sign, "day", day)
         setattr(sign, "hash", hash_data)
         setattr(sign, "minted", minted)
+        setattr(sign, "minting_fee", minting_fee)
         return sign
 
 
@@ -261,6 +303,92 @@ class GetUpdateDaySignsResource(Resource):
         if not sign:
             return_not_found(signs_ns, 'sign')
         sign.update(**sign_data)
+        return sign, 200
+
+
+@api.route('/nfts/')
+class GetNFTs(Resource):
+    """
+    Resource to handle:
+        - get NFTs
+    """
+
+    @signs_ns.doc(description="get NFTs")
+    @signs_ns.marshal_with(paginated_schema, envelope='nfts')
+    def get(self, page=1, per_page=10):
+        """
+        Get NFTs
+
+        Returns:
+            signs (list): NFTs
+        """
+        signs = NFT.query.order_by(NFT.token_id.desc()).paginate(
+            page, per_page, error_out=False)
+        data = {
+            'page': signs.page,
+            'pages': signs.pages,
+            'per_page': signs.per_page,
+            'total': signs.total,
+            'items': signs.items,
+        }
+        return data, 200
+
+
+@api.route('/trines/<sign_name>')
+class GetTrines(Resource):
+    """
+    Resource to handle:
+        - get Trines
+    """
+
+    @signs_ns.doc(description="get nft Trine")
+    def get(self, sign_name):
+        """
+        Get Trines
+
+        Returns:
+            trined (dict): Trines
+        """
+        trine_nfts = []
+        trines_groups = {
+            1: ['Rat', 'Dragon', 'Monkey'],
+            2: ['Ox', 'Snake', 'Rooster'],
+            3: ['Tiger', 'Horse', 'Dog'],
+            4: ['Rabbit', 'Goat', 'Pig'],
+        }
+
+        try:
+            nft_group = [i for i in trines_groups.values(
+            ) if sign_name.title() in i][0]
+            for sign in nft_group:
+                resp = (db.session.query(NFT)
+                        .filter(NFT.token_metadata['name']
+                                .astext.cast(Unicode) == sign).all())
+                for i in resp:
+                    trine_nfts.append(marshal(i, nft_schema))
+        except Exception:
+            pass
+        return trine_nfts, 200
+
+
+@api.route('/nfts/<int:token_id>')
+class GetNFT(Resource):
+    """
+    Resource to handle:
+        - get NFT
+    """
+
+    @signs_ns.doc(description="get NFT")
+    @signs_ns.marshal_with(nft_schema, envelope='nft')
+    def get(self, token_id):
+        """
+        Get NFT
+
+        Returns:
+            signs (list): NFT
+        """
+        sign = NFT.query.filter_by(token_id=token_id).first()
+
         return sign, 200
 
 

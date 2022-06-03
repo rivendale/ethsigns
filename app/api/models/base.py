@@ -42,3 +42,10 @@ class ModelOperations(object):
         """
         self.mint_sign.append(mint_sign)
         db.session.commit()
+
+    def add_nft(self, nft):
+        """
+        update entries
+        """
+        self.user_nfts.append(nft)
+        db.session.commit()

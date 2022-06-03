@@ -1,5 +1,6 @@
 from app import db
 from .base import ModelOperations
+from sqlalchemy.dialects.postgresql import JSON
 
 
 class Zodiacs(db.Model, ModelOperations):
@@ -83,3 +84,42 @@ class DaySign(db.Model, ModelOperations):
 
     def __repr__(self):
         return '<DaySign - {}>'.format(self.day)
+
+
+class NFT(db.Model, ModelOperations):
+    """
+    NFT model
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    token_id = db.Column(db.Integer)
+    image_url = db.Column(db.String(700), index=True,
+                          nullable=False, unique=False)
+    token_url = db.Column(db.String(700), index=True,
+                          nullable=True, unique=False)
+    gateway_token_url = db.Column(db.String(700), index=True,
+                                  nullable=True, unique=False)
+    metadata_url = db.Column(db.String(700), index=True, nullable=False)
+    token_metadata = db.Column(JSON, nullable=False, server_default='{}')
+
+    def __init__(self, nft):
+        """Constructor object
+        Args:
+            nft (dict): zodiac nft data to be saved in DB
+        Returns:
+            None"""
+        self.token_id = nft.get('token_id')
+        self.image_url = nft.get('image_url')
+        self.token_url = nft.get('token_url')
+        self.gateway_token_url = nft.get('gateway_token_url')
+        self.metadata_url = nft.get('metadata_url')
+        self.token_metadata = nft.get('token_metadata')
+
+    def __repr__(self):
+        return '<NFT - {}>'.format(self.token_id)
+
+    @property
+    def user_address(self):
+        from .import User
+        user = User.query.filter(
+            User.user_nfts.any(id=self.id)).first()
+        return user.address
