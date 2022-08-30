@@ -14,7 +14,7 @@ dnspython==2.1.0
 dominate==2.6.0
 email-validator==1.1.2
 eth-abi==2.1.1
-eth-account==0.5.4
+eth-account==0.5.9
 eth-hash==0.2.0
 eth-keyfile==0.5.1
 eth-keys==0.3.3
